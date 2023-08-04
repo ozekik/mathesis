@@ -5,6 +5,7 @@ title: "Mathesis: Formal Logic Library in Python"
 # Mathesis
 
 [![PyPI](https://img.shields.io/pypi/v/mathesis.svg)](https://pypi.org/project/mathesis/)
+[![Documentation Status](https://readthedocs.org/projects/mathesis/badge/?version=latest)](http://mathesis.readthedocs.io/en/latest/?badge=latest)
 <!-- [![PyPI downloads](https://img.shields.io/pypi/dm/mathesis.svg)](https://pypistats.org/packages/mathesis) -->
 
 [Mathesis](//github.com/ozekik/mathesis) is a formal logic/semantics/theorem proving library in Python, for humans.
@@ -12,6 +13,8 @@ It is suitable for, for example:
 
 - Students who learn logic and teachers who teach logic,
 - Researchers in logic, philosophy, linguistics, computer sciences, etc.
+
+**Documentation:** <https://mathesis.readthedocs.io/>
 
 ## Key features
 
