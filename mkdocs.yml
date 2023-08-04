@@ -1,0 +1,130 @@
+site_name: "Mathesis"
+site_description: Formal logic/semantics/theorem proving library in Python, for humans
+# strict: true
+site_url: https://mathesis.readthedocs.io/
+
+theme:
+  name: "material"
+  # font:
+  #   text: Inter
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue grey
+      accent: blue grey
+      toggle:
+        icon: material/lightbulb-outline
+        name: "Switch to dark mode"
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue grey
+      accent: blue grey
+      toggle:
+        icon: material/lightbulb
+        name: "Switch to light mode"
+  # features:
+  #   - content.tabs.link
+  #   - content.code.annotate
+  #   - announce.dismiss
+  #   - navigation.tabs
+  icon:
+    logo: simple/matrix
+  # favicon: "favicon.png"
+
+repo_name: ozekik/mathesis
+repo_url: https://github.com/ozekik/mathesis
+edit_uri: edit/master/docs/
+# extra:
+#   version:
+#     provider: mike
+
+# extra_css:
+#   - "extra/terminal.css"
+#   - "extra/tweaks.css"
+
+extra_javascript:
+  - js/extra.js
+  - js/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+#   - "extra/fluff.js"
+
+nav:
+  - Welcome to Mathesis: index.md
+  - Get Started:
+      - Installation: install.md
+      - 🚧 Use with JupyterLab/Jupyer Notebook: jupyter.md
+      # - "Propositional logics": propositional.md
+      # - "Predicate logics": predicate.md
+  - Usage:
+      - Formulas and grammars: usage/grammars.md
+      - Truth tables: usage/truth-tables.md
+      - 🚧 Set-theoretic models: usage/set-theoretic.md
+      - 🚧 Possible world (Kripke) semantics: usage/kripke.md
+      - Proofs with tableaux: usage/tableaux.md
+      - 🚧 Proofs with natural deduction: usage/natural-deduction.md
+      - Proofs with sequent calculi: usage/sequent-calculi.md
+      - Automated reasoning (reasoners, solvers): usage/automated-reasoning.md
+  - Contributing: contributing.md
+  - 🚧 API Reference: []
+
+markdown_extensions:
+  - tables
+  - toc:
+      permalink: true
+      title: Page contents
+  #   - admonition
+  - pymdownx.tasklist:
+      custom_checkbox: false
+  - pymdownx.arithmatex:
+      generic: true
+  #   - pymdownx.details
+  #   - pymdownx.superfences
+  #   - pymdownx.highlight
+  - pymdownx.extra
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+#   - pymdownx.tabbed:
+#       alternate_style: true
+  - pymdownx.superfences:
+      custom_fences:
+      - name: python
+        class: python
+        validator: !!python/name:markdown_exec.validator
+        format: !!python/name:markdown_exec.formatter
+
+watch:
+  - mathesis
+
+plugins:
+  # - mike:
+  #     alias_type: symlink
+  #     canonical_version: latest
+  - search
+  - markdown-exec
+  - exclude:
+      glob:
+        - plugins/*
+        - __pycache__/*
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]
+          options:
+            members_order: source
+            separate_signature: true
+            filters: ["!^_"]
+            docstring_options:
+              ignore_init_summary: true
+            merge_init_into_class: true
+            # extensions:
+            #   - docs/plugins/griffe_doclinks.py
+  # - mkdocs-simple-hooks:
+  #     hooks:
+  #       on_pre_build: "docs.plugins.main:on_pre_build"
+  #       on_files: "docs.plugins.main:on_files"
+  #       on_page_markdown: "docs.plugins.main:on_page_markdown"
+  # - redirects:
+  #     redirect_maps:
+  # - external-markdown:
