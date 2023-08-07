@@ -22,7 +22,8 @@ theme:
       toggle:
         icon: material/lightbulb
         name: "Switch to light mode"
-  # features:
+  features:
+      - navigation.footer
   #   - content.tabs.link
   #   - content.code.annotate
   #   - announce.dismiss
