@@ -5,6 +5,7 @@ site_url: https://mathesis.readthedocs.io/
 
 theme:
   name: "material"
+  custom_dir: "docs/overrides"
   # font:
   #   text: Inter
   palette:
