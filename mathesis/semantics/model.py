@@ -1,5 +1,5 @@
 from itertools import permutations
-from typing import Any, Callable, Dict, Set
+from typing import Any, Callable, Dict, List, Set, Tuple
 
 from mathesis import forms
 from mathesis.semantics.truth_table import classical as truth_table
@@ -22,7 +22,6 @@ class Model:
         domain: Set[Any] = set(),
         predicates: Dict[str, Set[Any]] = dict(),
         constants: Dict[str, Any] = dict(),
-        variables: Set[str] = set(),
         functions: Dict[str, Callable] = dict(),
     ):
         """
@@ -32,7 +31,6 @@ class Model:
                 or a function that assigns sets of tuples of objects to predicate symbols
             constants (Dict): a dictionary with constant symbols as keys and objects as values,
                 or a function that assigns objects to constants
-            variables (Set): a set of variable symbols
             functions (Dict): a dictionary with function symbols as keys and functions over domain as values
         """
         self.domain = domain
@@ -40,20 +38,23 @@ class Model:
         predicates = normalize_predicates(predicates)
         self.predicates = predicates
         self.constants = constants
-        self.variables = variables
         self.functions = functions
 
         # TODO: Support top and bottom
 
-    def assign_term_denotation(self, term):
-        if term in self.variables:
-            pass
-        elif term in self.constants:
-            return self.denotations.get(term, term)
+    # def assign_term_denotation(self, term):
+    #     if term in self.variables:
+    #         pass
+    #     elif term in self.constants:
+    #         return self.denotations.get(term, term)
 
     def valuate(self, fml: forms.Formula, variable_assignment: Dict[str, Any] = dict()):
         """
         Valuates a formula in a model.
+
+        Args:
+            fml (Formula): a formula
+            variable_assignment (Dict): a dictionary with variable symbols as keys and assigned objects as values
         """
         if isinstance(fml, forms.Atom):
             # Denotations of the terms, a list to be converted to a tuple
@@ -61,23 +62,18 @@ class Model:
 
             # Iterate over all terms in the formula
             for term in fml.terms:
-                # print(fml, term)
                 if term in self.constants:
                     denotation = self.constants.get(term)
 
-                elif term in self.variables:
-                    # If the assignment of the variable is already given, use it
-                    if term in variable_assignment:
-                        denotation = variable_assignment[term]
-                    else:
-                        raise RuntimeError(f"Variable assignment not given: '{term}'")
+                elif term in variable_assignment:
+                    denotation = variable_assignment[term]
 
                 # Fallback: use the term itself as denotation
                 elif term in self.domain:
                     denotation = term
 
                 else:
-                    raise NotImplementedError(f"Undefined type of term: '{term}'")
+                    raise RuntimeError(f"Variable assignment not given: '{term}'")
 
                 term_denotations.append(denotation)
 
@@ -163,6 +159,10 @@ class Model:
             )
 
     def validates(self, premises=[], conclusions=[]):
+        """
+        Returns true if the model validates the inference given premises and conclusions.
+        """
+
         # List up all free variables in premises and conclusions
         free_variables = set()
         for fml in premises + conclusions:
@@ -205,5 +205,12 @@ class Model:
             return False
 
 
-class KripkeModel:
-    pass
+# # TODO: Multiple kinds of accessibility relations
+# class Frame:
+#     def __init__(
+#         self,
+#         states: List[Model] = [],
+#         accessibility_relations: Set[Tuple[Any, Any]] = set(),
+#     ):
+#         self.states = states
+#         self.accessibility_relations = accessibility_relations
