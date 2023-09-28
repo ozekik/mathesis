@@ -55,13 +55,13 @@ nav:
   - Welcome to Mathesis: index.md
   - Get Started:
       - Installation: install.md
-      - 🚧 Use with JupyterLab/Jupyer Notebook: jupyter.md
+      - Use with JupyterLab/Jupyer Notebook: jupyter.py
       # - "Propositional logics": propositional.md
       # - "Predicate logics": predicate.md
   - Usage:
       - Formulas and grammars: usage/grammars.md
       - Truth tables: usage/truth-tables.md
-      - 🚧 Set-theoretic models: usage/set-theoretic.md
+      - Set-theoretic models: usage/models.py
       - 🚧 Possible world (Kripke) semantics: usage/kripke.md
       - Proofs with tableaux: usage/tableaux.md
       - 🚧 Proofs with natural deduction: usage/natural-deduction.md
@@ -105,6 +105,9 @@ plugins:
   #     canonical_version: latest
   - search
   - markdown-exec
+  - mkdocs-jupyter:
+      execute: true
+      ignore_h1_titles: true
   - exclude:
       glob:
         - plugins/*
