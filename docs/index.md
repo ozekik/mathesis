@@ -2,7 +2,7 @@
 title: "Mathesis: Formal Logic Library in Python"
 ---
 
-# Mathesis
+# Mathesis: Formal Logic Library in Python
 
 [![PyPI](https://img.shields.io/pypi/v/mathesis.svg)](https://pypi.org/project/mathesis/)
 [![Documentation Status](https://readthedocs.org/projects/mathesis/badge/?version=latest)](http://mathesis.readthedocs.io/en/latest/?badge=latest)
