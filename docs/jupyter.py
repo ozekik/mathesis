@@ -1,6 +1,6 @@
 # %% [markdown]
 #
-# Mathesis works well with Jupyter notebooks. This is an example of a notebook that uses Mathesis.
+# Mathesis works well with JupyterLab and Jupyter notebooks. This is an example of a notebook that uses Mathesis.
 
 # %%
 from IPython.display import display, Math

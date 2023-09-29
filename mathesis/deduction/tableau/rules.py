@@ -11,6 +11,12 @@ class Rule:
 
 class DoubleNegationRule(Rule):
     def apply(self, target, tip, counter=count(1)):
+        """
+        Args:
+            target: a node
+            tip: a leaf node of the branch to extend
+            counter: a counter
+        """
         subsubfml = target.fml.sub.sub
         node = Node(
             str(subsubfml), sign=target.sign, fml=subsubfml, parent=tip, n=next(counter)

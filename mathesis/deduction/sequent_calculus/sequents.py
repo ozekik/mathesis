@@ -65,7 +65,8 @@ class SequentTree:
             rule.apply(target, target, self.counter)
         )
         # print("queue_items", queue_items)
-        # # NOTE: check if branched
+
+        # NOTE: check if branched
         for branch in queue_items:
             # print("target.sequent_node", target.sequent_node)
             nodes_in_new_sequent = list(
@@ -95,6 +96,7 @@ class SequentTree:
             )
             for node in nodes_in_new_sequent:
                 node.sequent_node = sequent_node
+
         return self
 
     def tree(self, number=True):
