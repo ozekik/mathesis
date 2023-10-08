@@ -14,4 +14,4 @@ pip install -U mathesis
 
 Next steps:
 
-- To use Mathesis with JupyterLab/Jupyter Notebook, see [Use with JupyterLab/Jupyter Notebook](jupyter.md)
+- To use Mathesis with JupyterLab/Jupyter Notebook, see [Use with JupyterLab/Jupyter Notebook](jupyter.py)

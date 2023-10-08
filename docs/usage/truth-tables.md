@@ -14,7 +14,7 @@ print(conditional_clause)
 
 ## Generate truth tables for classical logic
 
-`mathesis.semantics.truth_table.ClassicalTruthTable` generates the truth table for a given formula.
+`mathesis.semantics.truth_table.ClassicalTruthTable` automatically generates the truth table for a given formula.
 
 ```python exec="1" result="text" source="above"
 from mathesis.grammars import BasicGrammar

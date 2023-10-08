@@ -2,7 +2,7 @@
 # ## Models
 #
 # Models can be defined using `Model` class in `mathesis.semantics.model`. The class takes four arguments:
-# * `domain`: the domain of the model
+# * `domain`: the domain of objects of the model
 # * `constants`: the constant symbols and assigned objects
 # * `predicates`: the predicate symbols and extensions
 # * `functions` (Optional): the functions symbols and assigned functions
