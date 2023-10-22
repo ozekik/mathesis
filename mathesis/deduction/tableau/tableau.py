@@ -65,7 +65,7 @@ class SignedTableau:
 
     def is_closed(self):
         logger.debug(("leaves: %s", self.root.leaves))
-        if all(getattr(node, "marked", False) for node in self.root.leaves):
+        if all(getattr(node, "branch_marked", False) for node in self.root.leaves):
             return True
         return False
 
