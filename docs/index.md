@@ -16,6 +16,12 @@ It is suitable for, for example:
 
 **Documentation:** <https://mathesis.readthedocs.io/>
 
+## Installation
+
+```bash
+pip install mathesis
+```
+
 ## Key features
 
 - Interactive theorem proving for humans (proof assistant)

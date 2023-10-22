@@ -25,6 +25,7 @@ theme:
         name: "Switch to light mode"
   features:
       - navigation.footer
+      - navigation.expand
   #   - content.tabs.link
   #   - content.code.annotate
   #   - announce.dismiss
