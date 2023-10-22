@@ -1,5 +1,5 @@
 site_name: "Mathesis"
-site_description: Formal logic/semantics/theorem proving library in Python, for humans
+site_description: Python library for formal logic (mathematical logic, philosophical logic), formal semantics, and theorem proving
 # strict: true
 site_url: https://mathesis.readthedocs.io/
 
