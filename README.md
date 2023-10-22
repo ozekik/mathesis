@@ -21,6 +21,12 @@ It is suitable for, for example:
 - Output formulas/proofs in LaTeX
 - Customizable ASCII/Unicode syntax (like `A -> B`, `A → B`, `A ⊃ B`)
 
+## Installation
+
+```bash
+pip install mathesis
+```
+
 ## Supported logics
 
 ### Propositional logics
