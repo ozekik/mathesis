@@ -60,14 +60,14 @@ nav:
       # - "Propositional logics": propositional.md
       # - "Predicate logics": predicate.md
   - Usage:
-      - Formulas and grammars: usage/grammars.md
-      - Truth tables: usage/truth-tables.md
-      - Set-theoretic models: usage/models.py
-      - 🚧 Possible world (Kripke) semantics: usage/kripke.md
-      - Proofs with tableaux: usage/tableaux.md
-      - 🚧 Proofs with natural deduction: usage/natural-deduction.md
-      - Proofs with sequent calculi: usage/sequent-calculi.md
-      - Automated reasoning (reasoners, solvers): usage/automated-reasoning.md
+      - Formulas and Grammars: usage/grammars.md
+      - Truth Tables: usage/truth-tables.py
+      - Set-theoretic Models: usage/models.py
+      - 🚧 Possible-world (Kripke) Semantics: usage/kripke.md
+      - Proofs using Tableau: usage/tableaux.md
+      - 🚧 Proofs using Natural Deduction: usage/natural-deduction.md
+      - Proofs using Sequent Calculus: usage/sequent-calculi.md
+      - Automated Reasoning: usage/automated-reasoning.md
   - Contributing: contributing.md
   - 🚧 API Reference: []
 
@@ -86,8 +86,8 @@ markdown_extensions:
   #   - pymdownx.highlight
   - pymdownx.extra
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 #   - pymdownx.tabbed:
 #       alternate_style: true
   - pymdownx.superfences:
