@@ -43,7 +43,7 @@ class NegationRule(Rule):
             return NegativeNegationRule().apply(target, tip, counter=counter)
 
 
-class ConjunctionRule(Rule):
+class PositiveConjunctionRule(Rule):
     def apply(self, target, tip, counter=count(1)):
         conj1, conj2 = target.fml.subs
         node1 = Node(
@@ -57,9 +57,9 @@ class ConjunctionRule(Rule):
         }
 
 
-class NegatedConjunctionRule(Rule):
+class NegativeConjunctionRule(Rule):
     def apply(self, target, tip, counter=count(1)):
-        conj1, conj2 = target.fml.sub.subs
+        conj1, conj2 = target.fml.subs
         nconj1, nconj2 = map(lambda v: forms.Negation(v), [conj1, conj2])
         nodeL = Node(
             str(nconj1), sign=target.sign, fml=nconj1, parent=tip, n=next(counter)
@@ -71,6 +71,14 @@ class NegatedConjunctionRule(Rule):
             "queue_items": [nodeL, nodeR],
             "counter": counter,
         }
+
+
+class ConjunctionRule(Rule):
+    def apply(self, target, tip, counter=count(1)):
+        if target.sign == sign.POSITIVE:
+            return PositiveConjunctionRule().apply(target, tip, counter=counter)
+        elif target.sign == sign.NEGATIVE:
+            return NegativeConjunctionRule().apply(target, tip, counter=counter)
 
 
 class PositiveDisjunctionRule(Rule):
