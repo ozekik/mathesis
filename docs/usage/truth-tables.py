@@ -66,7 +66,7 @@ f"Valid: {table.is_valid()}"
 # %% [markdown]
 # #### Łukasiewicz's Ł<sub>3</sub>
 
-WIP
+# WIP
 
 # %% [markdown]
 # ### Three-valued logic LP
