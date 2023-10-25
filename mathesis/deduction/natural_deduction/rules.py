@@ -52,17 +52,25 @@ class Conditional:
     Intro = signed_rules.NegativeConditionalRule
 
     class Elim(Rule):
-        def __init__(self, antecendent):
-            self.antecendent = antecendent
+        def __init__(self):
+            pass
 
         def apply(self, target, tip, counter=count(1)):
             assert target.sign == sign.POSITIVE, "Sign is not positive"
             assert isinstance(target.fml, forms.Conditional), "Not a conditional"
-            antec, desc = target.fml.subs
-            print(str(antec), str(self.antecendent.fml))
-            assert str(antec) == str(self.antecendent.fml), "Antecendent does not match"
+            antec, conseq = target.fml.subs
+
+            # TODO: Better way to check conditions
+            premises = list(map(lambda x: str(x.fml), target.sequent_node.sequent.left))
+            # print(premises)
+            assert str(antec) in premises, "Antecendent does not match"
+
+            # conclusion = str(target.sequent_node.sequent.right[0].fml)
+            # print(conclusion)
+            # assert str(conseq) == conclusion, "Consequent does not match"
+
             node2 = Node(
-                str(desc), sign=sign.POSITIVE, fml=desc, parent=tip, n=next(counter)
+                str(conseq), sign=sign.POSITIVE, fml=conseq, parent=tip, n=next(counter)
             )
             return {
                 "queue_items": [[node2]],

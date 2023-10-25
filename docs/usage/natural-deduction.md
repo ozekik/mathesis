@@ -2,7 +2,7 @@
 
 ## Introduction
 
-In mathesis, a state of a natural deduction proof and its subproofs consists of (sub)proof's available premises and conclusion at a step.
+In mathesis, a state of a natural deduction proof and its subproofs consists of the (sub)proof's available premises and conclusion at a step.
 A state is displayed as `<premises> ⇒ <conclusion>`.
 Intuitively, the formulas on the left side of `⇒` are what to come to the upper part of the final (sub)proof, and those on the right side of `⇒` are what to come to the lower part of the final (sub)proof.
 
@@ -28,7 +28,7 @@ print(deriv.tree())
 deriv.apply(deriv[7], rules.Disjunction.Intro("left"))
 print(deriv.tree())
 
-deriv.apply(deriv[8], rules.Conditional.Elim(antecendent=deriv[5]))
+deriv.apply(deriv[8], rules.Conditional.Elim())
 print(deriv.tree())
 
 deriv.apply(deriv[16], rules.Disjunction.Intro("right"))
