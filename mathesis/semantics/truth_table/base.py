@@ -3,7 +3,7 @@ from itertools import permutations, product
 from typing import List, Set
 
 from anytree import Node, NodeMixin, PostOrderIter, RenderTree
-from prettytable import PrettyTable
+from prettytable import PrettyTable, PLAIN_COLUMNS
 
 from mathesis import forms
 
@@ -46,8 +46,9 @@ class ConnectiveClause:
 
         return table
 
-    def to_string(self):
+    def to_string(self, style=PLAIN_COLUMNS):
         table = self.to_table()
+        table.set_style(style)
         return str(table)
 
     def _repr_html_(self):
@@ -218,8 +219,9 @@ class TruthTable:
                 table.add_row(row)
         return table
 
-    def to_string(self):
+    def to_string(self, style=PLAIN_COLUMNS):
         table = self.to_table()
+        table.set_style(style)
         return str(table)
 
     def _repr_html_(self):
