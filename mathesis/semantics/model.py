@@ -87,9 +87,9 @@ class Model:
             # print(term_denotations, extension)
 
             if term_denotations in extension:
-                return "1"
+                return 1
             else:
-                return "0"
+                return 0
 
         elif isinstance(fml, forms.Universal):
             # print(fml.sub, fml.variable, fml.sub.free_terms)
@@ -106,10 +106,10 @@ class Model:
                 values.append(value)
 
             # Return true if true in all possible assignments
-            if all(value == "1" for value in values):
-                return "1"
+            if all(value == 1 for value in values):
+                return 1
             else:
-                return "0"
+                return 0
 
         elif isinstance(fml, forms.Particular):
             values = []
@@ -124,10 +124,10 @@ class Model:
                 values.append(value)
 
             # Return true if true in some possible assignments
-            if any(value == "1" for value in values):
-                return "1"
+            if any(value == 1 for value in values):
+                return 1
             else:
-                return "0"
+                return 0
 
         elif isinstance(fml, forms.Negation):
             return truth_table.NegationClause().apply(
@@ -192,8 +192,8 @@ class Model:
                 value = self.valuate(fml, variable_assignment=variable_assignment)
                 conclusion_values.append(value)
 
-            if all(value == "1" for value in premise_values) and any(
-                value != "1" for value in conclusion_values
+            if all(value == 1 for value in premise_values) and any(
+                value != 1 for value in conclusion_values
             ):
                 is_valid_with_assignment.append(False)
             else:

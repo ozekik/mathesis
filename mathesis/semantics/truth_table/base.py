@@ -14,6 +14,10 @@ logger.addHandler(logging.NullHandler())
 class ConnectiveClause:
     column_names: List[str]
     table: dict
+    truth_value_symbols: None
+
+    def __init__(self, truth_value_symbols=None) -> None:
+        self.truth_value_symbols = truth_value_symbols
 
     def apply(self, *values):
         if None in values:
@@ -23,7 +27,7 @@ class ConnectiveClause:
     def __str__(self):
         return self.to_string()
 
-    def to_string(self):
+    def to_table(self):
         table = PrettyTable()
         table.align = "c"
         table.format = True
@@ -33,8 +37,22 @@ class ConnectiveClause:
         table.field_names = self.column_names
 
         for values_from, value_to in self.table.items():
+            if self.truth_value_symbols:
+                values_from = tuple(
+                    self.truth_value_symbols.get(v, v) for v in values_from
+                )
+                value_to = self.truth_value_symbols.get(value_to, value_to)
             table.add_row(values_from + (value_to,))
+
+        return table
+
+    def to_string(self):
+        table = self.to_table()
         return str(table)
+
+    def _repr_html_(self):
+        table = self.to_table()
+        return table.get_html_string(format=False)
 
 
 class AssignedNodeBase:
@@ -51,7 +69,8 @@ class AssignedNode(AssignedNodeBase, NodeMixin):
 
     @property
     def truth_value(self):
-        if self._truth_value:
+        # NOTE: Make sure to specify `is not None`: _truth_value can be 0 and accidentally return False
+        if self._truth_value is not None:
             return self._truth_value
         else:
             raise Exception("Truth value not assigned")
@@ -124,6 +143,10 @@ class TruthTable:
             assigned_node.truth_value = self.clauses[forms.Conditional].apply(
                 *tuple(child.truth_value for child in assigned_node.children)
             )
+        else:
+            raise NotImplementedError(
+                f"Clause for {type(assigned_node.fml)} not implemented"
+            )
 
     def wrap_fml(self, fml):
         def transformer(fml):
@@ -132,8 +155,9 @@ class TruthTable:
                 node.children = [transformer(subfml) for subfml in fml.subs]
             elif isinstance(fml, forms.Unary):
                 node.children = [transformer(fml.sub)]
-            elif isinstance(fml, forms.Quantifier):
-                node.children = [transformer(fml.sub)]
+            # NOTE: No truth table for quantifiers
+            # elif isinstance(fml, forms.Quantifier):
+            #     node.children = [transformer(fml.sub)]
             return node
 
         wrapped_fml = fml.transform(transformer)
@@ -159,7 +183,7 @@ class TruthTable:
     def counterexample(self):
         pass
 
-    def to_string(self):
+    def to_table(self):
         table = PrettyTable()
         table.align = "c"
         table.format = True
@@ -170,10 +194,10 @@ class TruthTable:
             for tv in product(self.truth_values, repeat=len(atom_symbols)):
                 assignments = dict(zip(atom_symbols, tv))
                 tree = self.wrap_fml(fml)
-                # print(RenderTree(node))
+                # print(RenderTree(tree))
                 tree.assign_atom_values(assignments)
                 # print(tree.truth_value)
-                # print(RenderTree(node))
+                # print(RenderTree(tree))
                 field_names = []
                 row = []
                 for node in PostOrderIter(tree):
@@ -181,9 +205,23 @@ class TruthTable:
                     # print(str(node.fml), node.truth_value)
                     if str(node.fml) not in field_names:
                         field_names.append(str(node.fml))
-                        row.append(node.truth_value)
+                        if hasattr(self, "truth_value_symbols"):
+                            truth_value = self.truth_value_symbols.get(
+                                node.truth_value, node.truth_value
+                            )
+                        else:
+                            truth_value = node.truth_value
+                        row.append(truth_value)
                 # print(field_names, row)
                 if not table.field_names:
                     table.field_names = field_names
                 table.add_row(row)
+        return table
+
+    def to_string(self):
+        table = self.to_table()
         return str(table)
+
+    def _repr_html_(self):
+        table = self.to_table()
+        return table.get_html_string(format=False)
