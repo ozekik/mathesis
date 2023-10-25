@@ -25,7 +25,7 @@ pip install mathesis
 ## Key features
 
 - Interactive theorem proving for humans (proof assistant)
-- Automated theorem proving (automated reasoning)
+- Automated reasoning (theorem prover)
 - Define models and check validity of inferences in the models
 - JupyterLab/Jupyter Notebook support
 - Output formulas/proofs in LaTeX
