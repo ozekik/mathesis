@@ -11,7 +11,8 @@ class Rule:
 
 class PositiveNegationRule(Rule):
     def apply(self, target, tip, counter=count(1)):
-        assert target.sign == sign.POSITIVE
+        assert target.sign == sign.POSITIVE, "Sign is not positive"
+        assert isinstance(target.fml, forms.Negation), "Not a negation"
         subfml = target.fml.sub
         node = Node(
             str(subfml), sign=sign.NEGATIVE, fml=subfml, parent=tip, n=next(counter)
@@ -24,7 +25,8 @@ class PositiveNegationRule(Rule):
 
 class NegativeNegationRule(Rule):
     def apply(self, target, tip, counter=count(1)):
-        assert target.sign == sign.NEGATIVE
+        assert target.sign == sign.NEGATIVE, "Sign is not negative"
+        assert isinstance(target.fml, forms.Negation), "Not a negation"
         subfml = target.fml.sub
         node = Node(
             str(subfml), sign=sign.POSITIVE, fml=subfml, parent=tip, n=next(counter)
@@ -45,6 +47,8 @@ class NegationRule(Rule):
 
 class PositiveConjunctionRule(Rule):
     def apply(self, target, tip, counter=count(1)):
+        assert target.sign == sign.POSITIVE, "Sign is not positive"
+        assert isinstance(target.fml, forms.Conjunction), "Not a conjunction"
         conj1, conj2 = target.fml.subs
         node1 = Node(
             str(conj1), sign=target.sign, fml=conj1, parent=tip, n=next(counter)
@@ -53,22 +57,23 @@ class PositiveConjunctionRule(Rule):
             str(conj2), sign=target.sign, fml=conj2, parent=node1, n=next(counter)
         )
         return {
-            "queue_items": [node1, node2],
+            "queue_items": [[node1, node2]],
         }
 
 
 class NegativeConjunctionRule(Rule):
     def apply(self, target, tip, counter=count(1)):
+        assert target.sign == sign.NEGATIVE, "Sign is not negative"
+        assert isinstance(target.fml, forms.Conjunction), "Not a conjunction"
         conj1, conj2 = target.fml.subs
-        nconj1, nconj2 = map(lambda v: forms.Negation(v), [conj1, conj2])
         nodeL = Node(
-            str(nconj1), sign=target.sign, fml=nconj1, parent=tip, n=next(counter)
+            str(conj1), sign=sign.NEGATIVE, fml=conj1, parent=tip, n=next(counter)
         )
         nodeR = Node(
-            str(nconj2), sign=target.sign, fml=nconj2, parent=tip, n=next(counter)
+            str(conj2), sign=sign.NEGATIVE, fml=conj2, parent=tip, n=next(counter)
         )
         return {
-            "queue_items": [nodeL, nodeR],
+            "queue_items": [[nodeL], [nodeR]],
             "counter": counter,
         }
 
@@ -83,6 +88,8 @@ class ConjunctionRule(Rule):
 
 class PositiveDisjunctionRule(Rule):
     def apply(self, target, tip, counter=count(1)):
+        assert target.sign == sign.POSITIVE, "Sign is not positive"
+        assert isinstance(target.fml, forms.Disjunction), "Not a disjunction"
         disj1, disj2 = target.fml.subs
         nodeL = Node(
             str(disj1), sign=target.sign, fml=disj1, parent=tip, n=next(counter)
@@ -98,13 +105,14 @@ class PositiveDisjunctionRule(Rule):
 
 class NegativeDisjunctionRule(Rule):
     def apply(self, target, tip, counter=count(1)):
-        disj1, disj2 = target.fml.sub.subs
-        ndisj1, ndisj2 = map(lambda v: forms.Negation(v), [disj1, disj2])
+        assert target.sign == sign.NEGATIVE, "Sign is not negative"
+        assert isinstance(target.fml, forms.Disjunction), "Not a disjunction"
+        disj1, disj2 = target.fml.subs
         node1 = Node(
-            str(ndisj1), sign=target.sign, fml=ndisj1, parent=tip, n=next(counter)
+            str(disj1), sign=sign.NEGATIVE, fml=disj1, parent=tip, n=next(counter)
         )
         node2 = Node(
-            str(ndisj2), sign=target.sign, fml=ndisj2, parent=node1, n=next(counter)
+            str(disj2), sign=sign.NEGATIVE, fml=disj2, parent=node1, n=next(counter)
         )
         return {
             "queue_items": [[node1, node2]],
@@ -122,7 +130,8 @@ class DisjunctionRule(Rule):
 
 class PositiveConditionalRule(Rule):
     def apply(self, target, tip, counter=count(1)):
-        assert target.sign == sign.POSITIVE
+        assert target.sign == sign.POSITIVE, "Sign is not positive"
+        assert isinstance(target.fml, forms.Conditional), "Not a conditional"
         antec, desc = target.fml.subs
         nodeL = Node(
             str(antec), sign=sign.NEGATIVE, fml=antec, parent=tip, n=next(counter)
@@ -138,7 +147,8 @@ class PositiveConditionalRule(Rule):
 
 class NegativeConditionalRule(Rule):
     def apply(self, target, tip, counter=count(1)):
-        assert target.sign == sign.NEGATIVE
+        assert target.sign == sign.NEGATIVE, "Sign is not negative"
+        assert isinstance(target.fml, forms.Conditional), "Not a conditional"
         antec, desc = target.fml.subs
         node1 = Node(
             str(antec), sign=sign.POSITIVE, fml=antec, parent=tip, n=next(counter)

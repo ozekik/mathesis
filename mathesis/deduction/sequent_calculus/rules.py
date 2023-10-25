@@ -10,10 +10,14 @@ class StructuralRule:
 NegationLeft = signed_rules.PositiveNegationRule
 NegationRight = signed_rules.NegativeNegationRule
 
-ConditionalLeft = signed_rules.PositiveConditionalRule
-ConditionalRight = signed_rules.NegativeConditionalRule
+ConjunctionLeft = signed_rules.PositiveConjunctionRule
+ConjunctionRight = signed_rules.NegativeConjunctionRule
 
 DisjunctionLeft = signed_rules.PositiveDisjunctionRule
+DisjunctionRight = signed_rules.NegativeDisjunctionRule
+
+ConditionalLeft = signed_rules.PositiveConditionalRule
+ConditionalRight = signed_rules.NegativeConditionalRule
 
 class WeakeningLeft(StructuralRule):
     def apply(self, target, tips, counter=count(1)):

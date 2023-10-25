@@ -68,7 +68,6 @@ class SequentTree:
 
         # NOTE: check if branched
         for branch in queue_items:
-            # print("target.sequent_node", target.sequent_node)
             nodes_in_new_sequent = list(
                 filter(
                     lambda x: x.n != target.n and not getattr(x, "weakened", False),
