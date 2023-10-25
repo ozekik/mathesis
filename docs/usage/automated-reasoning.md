@@ -6,7 +6,7 @@ Mathesis provides simple solvers (reasoners, provers) based on truth table metho
 
 ### Solvers based on truth table method
 
-See [Truth tables](truth-tables.md).
+See [Truth tables](truth-tables.py).
 
 ### Solvers based on tableau method
 

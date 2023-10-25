@@ -84,6 +84,7 @@ pip install mathesis
 
 ## Todos
 
+- [ ] Add tests
 - [ ] Hilbert systems
 - [ ] Natural deduction
 - [ ] Boolean algebra
