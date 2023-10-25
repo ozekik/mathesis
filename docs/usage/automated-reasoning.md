@@ -1,12 +1,14 @@
-# Automated reasoning (reasoners, solvers)
+# Automated Reasoning
 
-Mathesis provides simple solvers based on truth table method and on tableau method.
+Mathesis provides simple solvers (reasoners, provers) based on truth table method and on tableau method.
 
-## Solvers for propositional logic based on truth table method
+## Reasoning in propositional logic
+
+### Solvers based on truth table method
 
 See [Truth tables](truth-tables.md).
 
-## Solvers for propositional logic based on tableau method
+### Solvers based on tableau method
 
 `mathesis.solvers.ClassicalSolver` is a solver for classical propositional logic based on tableau method.
 

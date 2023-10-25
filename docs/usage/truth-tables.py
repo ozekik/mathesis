@@ -45,7 +45,9 @@ f"Valid: {table.is_valid()}"
 # Some many-valued logics are implemented out of the box. They are available from `mathesis.semantics.truth_table`.
 
 # %% [markdown]
-# ### Three-valued logic K<sub>3</sub>
+# ### Three-valued logic K<sub>3</sub> and Ł<sub>3</sub>
+
+# #### Kleene's K<sub>3</sub>
 
 # %%
 from mathesis.grammars import BasicGrammar
@@ -60,6 +62,11 @@ table
 
 # %%
 f"Valid: {table.is_valid()}"
+
+# %% [markdown]
+# #### Łukasiewicz's Ł<sub>3</sub>
+
+WIP
 
 # %% [markdown]
 # ### Three-valued logic LP

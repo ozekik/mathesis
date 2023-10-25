@@ -89,3 +89,4 @@ pip install mathesis
 - [ ] Boolean algebra
 - [ ] Type theory
 - [ ] Metatheorems
+- [ ] Output graphical representations of models
