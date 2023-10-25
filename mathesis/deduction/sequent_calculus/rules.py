@@ -19,6 +19,7 @@ DisjunctionRight = signed_rules.NegativeDisjunctionRule
 ConditionalLeft = signed_rules.PositiveConditionalRule
 ConditionalRight = signed_rules.NegativeConditionalRule
 
+
 class WeakeningLeft(StructuralRule):
     def apply(self, target, tips, counter=count(1)):
         target.weakened = True
