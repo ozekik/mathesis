@@ -65,7 +65,7 @@ nav:
       - Set-theoretic Models: usage/models.py
       - 🚧 Possible-world (Kripke) Semantics: usage/kripke.md
       - Proofs using Tableau: usage/tableaux.md
-      - 🚧 Proofs using Natural Deduction: usage/natural-deduction.md
+      - Proofs using Natural Deduction: usage/natural-deduction.md
       - Proofs using Sequent Calculus: usage/sequent-calculi.md
       - Automated Reasoning: usage/automated-reasoning.md
   - Contributing: contributing.md
