@@ -6,7 +6,7 @@ In mathesis, a state of a natural deduction proof and its subproofs consists of 
 A state is displayed as `<premises> ⇒ <conclusion>`.
 Intuitively, the formulas on the left side of `⇒` are what to come to the upper part of the final (sub)proof, and those on the right side of `⇒` are what to come to the lower part of the final (sub)proof.
 
-Natural deduction is a proof system that consists of **elimination rules** and **introduction rules**. In mathesis,
+Natural deduction is a proof system that consists of elimination rules and introduction rules. In mathesis,
 
 - you can apply an **elimination rule** *up-to-down* to the premises of a (sub)proof to obtain new premises.
 - Similarly, you can apply an **introduction rule** *down-to-up* to the conclusion of a (sub)proof and convert it into new subproofs.
