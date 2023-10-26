@@ -7,43 +7,50 @@ class StructuralRule:
     pass
 
 
-NegationLeft = signed_rules.PositiveNegationRule
-NegationRight = signed_rules.NegativeNegationRule
-
-ConjunctionLeft = signed_rules.PositiveConjunctionRule
-ConjunctionRight = signed_rules.NegativeConjunctionRule
-
-DisjunctionLeft = signed_rules.PositiveDisjunctionRule
-DisjunctionRight = signed_rules.NegativeDisjunctionRule
-
-ConditionalLeft = signed_rules.PositiveConditionalRule
-ConditionalRight = signed_rules.NegativeConditionalRule
+class Negation:
+    Left = signed_rules.PositiveNegationRule
+    Right = signed_rules.NegativeNegationRule
 
 
-class WeakeningLeft(StructuralRule):
-    def apply(self, target, tips, counter=count(1)):
-        target.weakened = True
-        # left = [v for v in target.sequent_node.sequent[0] if v != target]
-        # right = target.sequent_node.sequent[1]
-        # sequent_node = Node(
-        #     "{} ⇒ {}".format(
-        #         ", ".join(map(lambda x: f"{x.name}", left)),
-        #         ", ".join(map(lambda x: f"{x.name}", right)),
-        #     ),
-        #     sequent=[left, right],
-        #     parent=target.sequent_node,
-        # )
-        return {
-            "queue_items": [[]],
-            "counter": counter,
-        }
+class Conjunction:
+    Left = signed_rules.PositiveConjunctionRule
+    Right = signed_rules.NegativeConjunctionRule
 
 
-class WeakeningRight(StructuralRule):
-    def apply(self, target, tips, counter=count(1)):
-        target.weakened = True
-        # target.sequent_node.sequent[1].remove(target)
-        return {
-            "queue_items": [[]],
-            "counter": counter,
-        }
+class Disjunction:
+    Left = signed_rules.PositiveDisjunctionRule
+    Right = signed_rules.NegativeDisjunctionRule
+
+
+class Conditional:
+    Left = signed_rules.PositiveConditionalRule
+    Right = signed_rules.NegativeConditionalRule
+
+
+class Weakening:
+    class Left(StructuralRule):
+        def apply(self, target, tips, counter=count(1)):
+            target.weakened = True
+            # left = [v for v in target.sequent_node.sequent[0] if v != target]
+            # right = target.sequent_node.sequent[1]
+            # sequent_node = Node(
+            #     "{} ⇒ {}".format(
+            #         ", ".join(map(lambda x: f"{x.name}", left)),
+            #         ", ".join(map(lambda x: f"{x.name}", right)),
+            #     ),
+            #     sequent=[left, right],
+            #     parent=target.sequent_node,
+            # )
+            return {
+                "queue_items": [[]],
+                "counter": counter,
+            }
+
+    class Right(StructuralRule):
+        def apply(self, target, tips, counter=count(1)):
+            target.weakened = True
+            # target.sequent_node.sequent[1].remove(target)
+            return {
+                "queue_items": [[]],
+                "counter": counter,
+            }

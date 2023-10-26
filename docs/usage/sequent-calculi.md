@@ -1,6 +1,6 @@
 # Proofs using Sequent Calculus
 
-<a href="https://en.wikipedia.org/wiki/Sequent_calculus" target="_blank">Sequent calculi</a> are formal proof systems based on *sequents*, which normally are expressions of the form $\Gamma \vdash \Delta$, where $\Gamma$ and $\Delta$ are lists or sets of formulas.
+<a href="https://en.wikipedia.org/wiki/Sequent_calculus" target="_blank">Sequent calculus</a> (plural: calculi) is a formal proof system based on *sequents*, which normally are expressions of the form $\Gamma \vdash \Delta$, where $\Gamma$ and $\Delta$ are lists or sets of formulas.
 
 ## Sequent trees and applications of rules
 
@@ -19,17 +19,17 @@ conclusions = grammar.parse(["B"])
 st = SequentTree(premises, conclusions)
 
 print(st.tree())
-st.apply(st[1], rules.NegationLeft())
+st.apply(st[1], rules.Negation.Left())
 print(st.tree())
-st.apply(st[5], rules.DisjunctionLeft())
+st.apply(st[5], rules.Disjunction.Left())
 print(st.tree())
-st.apply(st[9], rules.WeakeningRight())
+st.apply(st[9], rules.Weakening.Right())
 print(st.tree())
-st.apply(st[12], rules.WeakeningRight())
+st.apply(st[12], rules.Weakening.Right())
 print(st.tree())
 ```
 
-## Render in LaTeX
+## Render the proof in LaTeX
 
 A sequent tree object can be rendered in LaTeX with `st.latex()`.
 The LaTeX output uses a `prooftree` environment of `bussproofs` package.
@@ -48,13 +48,13 @@ st = SequentTree(premises, conclusions)
 print(st.tree())
 print(st.latex(number=False), "\n")
 
-st.apply(st[1], rules.NegationLeft())
+st.apply(st[1], rules.Negation.Left())
 # print(st.tree())
-st.apply(st[5], rules.DisjunctionLeft())
+st.apply(st[5], rules.Disjunction.Left())
 # print(st.tree())
-st.apply(st[9], rules.WeakeningRight())
+st.apply(st[9], rules.Weakening.Right())
 # print(st.tree())
-st.apply(st[12], rules.WeakeningRight())
+st.apply(st[12], rules.Weakening.Right())
 print(st.tree())
 print(st.latex(number=False))
 ```
