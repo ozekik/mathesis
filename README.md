@@ -12,6 +12,12 @@ It is particularly well-suited for:
 
 **Documentation:** <https://mathesis.readthedocs.io/>
 
+## Installation
+
+```bash
+pip install mathesis
+```
+
 ## Key features
 
 - Interactive theorem proving for humans (proof assistant)
@@ -19,13 +25,7 @@ It is particularly well-suited for:
 - Define models and check validity of inferences in the models
 - JupyterLab/Jupyter Notebook support
 - Output formulas/proofs in LaTeX
-- Customizable ASCII/Unicode syntax (like `A -> B`, `A → B`, `A ⊃ B`)
-
-## Installation
-
-```bash
-pip install mathesis
-```
+- Customizable ASCII/Unicode syntax (like `A -> B`, `A → B`, `A ⊃ B` for the conditional)
 
 ## Supported logics
 

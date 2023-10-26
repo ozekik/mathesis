@@ -29,7 +29,7 @@ pip install mathesis
 - Define models and check validity of inferences in the models
 - JupyterLab/Jupyter Notebook support
 - Output formulas/proofs in LaTeX
-- Customizable ASCII/Unicode syntax (like `A -> B`, `A → B`, `A ⊃ B`)
+- Customizable ASCII/Unicode syntax (like `A -> B`, `A → B`, `A ⊃ B` for the conditional)
 
 ## Supported logics
 
