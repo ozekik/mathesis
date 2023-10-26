@@ -68,6 +68,43 @@ tab = SignedTableau(premises, conclusions)
 print(tab.htree())
 ```
 
+## First-order logic
+
+In first-order logic, the rules extend to quantifiers as follows:
+
+### Unsigned tableaux
+
+- `NegatedParticularRule`
+- `NegatedUniversalRule`
+- `UniversalInstantiationRule`
+- `ParticularInstantiationRule`
+
+```python exec="1" result="text" source="above"
+from mathesis.grammars import BasicGrammar
+from mathesis.deduction.tableau import Tableau, rules
+
+grammar = BasicGrammar()
+
+premises = grammar.parse(["P(a)", "∀x(P(x)→Q(x))"])
+conclusions = grammar.parse(["Q(a)"])
+tab = Tableau(premises, conclusions)
+
+print(tab.htree())
+print(f"Closed: {tab.is_closed()}\n")
+
+tab.apply(tab[2], rules.UniversalInstantiationRule(replacing_term="a"))
+print(tab.htree())
+
+tab.apply(tab[4], rules.ConditionalRule())
+print(tab.htree())
+
+print(f"Closed: {tab.is_closed()}\n")
+```
+
+### Signed tableaux
+
+WIP
+
 ## Further reading
 
 See [Automated reasoning](automated-reasoning.md) for automated reasoning with tableaux.

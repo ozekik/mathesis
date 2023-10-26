@@ -1,4 +1,4 @@
-from anytree import Node
+from anytree import Node, Walker
 from itertools import count
 from copy import copy
 
@@ -171,8 +171,16 @@ class ParticularInstantiationRule(Rule):
     def apply(self, target, tip, counter=count(1)):
         target_variable = target.fml.variable
         # TODO: copy recusrively
-        subfml = target.fml.sub.clone()
-        # TODO: check if a valid replacing_term
+        # subfml = target.fml.sub.clone()
+        subfml = copy(target.fml.sub)
+
+        # NOTE: check if a valid replacing_term
+        ancestors = (tip,) + tip.ancestors
+        for ancestor in ancestors:
+            fml = ancestor.fml
+            # print(fml, fml.free_terms)
+            assert self.replacing_term not in fml.free_terms, "Replacing term has been already occurred in the branch"
+
         for term in subfml.free_terms:
             if term == target_variable:
                 subfml.replace_term(term, self.replacing_term)
