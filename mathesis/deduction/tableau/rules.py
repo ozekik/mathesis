@@ -127,7 +127,7 @@ class UniversalInstantiationRule(Rule):
     def apply(self, target, tip, counter=count(1)):
         target_variable = target.fml.variable
         # TODO: copy recusrively
-        subfml = copy(target.fml.sub)
+        subfml = target.fml.sub.clone()
         # TODO: check if a valid replacing_term
         for term in subfml.free_terms:
             if term == target_variable:
@@ -149,7 +149,7 @@ class UniversalInstantiationRule(Rule):
 class NegatedUniversalRule(Rule):
     def apply(self, target, tip, counter=count(1)):
         subfml = target.fml.sub
-        subsubfml = copy(subfml.sub)
+        subsubfml = subfml.sub.clone()
         fml = forms.Particular(subfml.variable, forms.Negation(subsubfml))
         node = Node(
             str(fml),
@@ -171,8 +171,7 @@ class ParticularInstantiationRule(Rule):
     def apply(self, target, tip, counter=count(1)):
         target_variable = target.fml.variable
         # TODO: copy recusrively
-        # subfml = target.fml.sub.clone()
-        subfml = copy(target.fml.sub)
+        subfml = target.fml.sub.clone()
 
         # NOTE: check if a valid replacing_term
         ancestors = (tip,) + tip.ancestors
@@ -200,7 +199,7 @@ class ParticularInstantiationRule(Rule):
 class NegatedParticularRule(Rule):
     def apply(self, target, tip, counter=count(1)):
         subfml = target.fml.sub
-        subsubfml = copy(subfml.sub)
+        subsubfml = subfml.sub.clone()
         fml = forms.Universal(subfml.variable, forms.Negation(subsubfml))
         node = Node(
             str(fml),
