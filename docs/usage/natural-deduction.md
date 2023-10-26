@@ -35,18 +35,18 @@ deriv.apply(deriv[16], rules.Disjunction.Intro("right"))
 print(deriv.tree())
 ```
 
-## Output as Gentzen-style Proof
+## Render as Gentzen-style Proof
 
 WIP
 
-## Output as Fitch-style Proof
+## Render as Fitch-style Proof
 
 WIP
 
-## Output as Suppes-Lemmon-style Proof
+## Render as Suppes-Lemmon-style Proof
 
 WIP
 
-## Output as Sequent Calculus Proof
+## Render as Sequent Calculus Proof
 
 WIP

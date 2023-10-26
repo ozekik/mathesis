@@ -29,11 +29,11 @@ st.apply(st[12], rules.WeakeningRight())
 print(st.tree())
 ```
 
-## LaTeX output
+## Render in LaTeX
 
-A sequent tree object can be converted to LaTeX with `st.latex()`.
+A sequent tree object can be rendered in LaTeX with `st.latex()`.
 The LaTeX output uses a `prooftree` environment of `bussproofs` package.
-MathJax supports `bussproofs` package, so you can render the LaTeX output on Web pages.
+MathJax supports `bussproofs` package, so you can render the LaTeX output on a Web page.
 
 ```python exec="1" result="text" source="above"
 from mathesis.deduction.sequent_calculus import SequentTree, rules

@@ -36,24 +36,30 @@ pip install mathesis
 ### Propositional logics
 
 - **Classical propositional logic**
-    - [x] Tableaux, Sequent calculi
-    - [x] Truth tables
+    - Truth tables, Tableaux, Sequent calculi
 - **Many-valued logics**
-    - [x] Truth tables
-- **Modal logics**
-- **Intuitionistic logic**
-- **Fuzzy logics**
-- **Substructural logics**
+    - Truth tables
 
-### Quantified logics (first-order or predicate logics)
+#### In Progress
+
+- Modal logics
+- Intuitionistic logic
+- Fuzzy logics
+- Substructural logics
+
+### First-order logics (quantified, predicate logics)
 
 - **Classical first-order logic**
-- **Many-valued logics**
-- **Modal logics**
-- **Intuitionistic logic**
-- **Fuzzy logics**
-- **Substructural logics**
-- **Higher-order logics**
+    - Tableaux
+
+#### In Progress
+
+- Many-valued logics
+- Modal logics
+- Intuitionistic logic
+- Fuzzy logics
+- Substructural logics
+- Higher-order logics
 
 ## Development status
 
@@ -65,12 +71,13 @@ pip install mathesis
 - **Hilbert systems**
     * [ ] Hilbert systems
 - **Natural deduction**
+    * [x] Generic natural deduction
     * [ ] Gentzen-style natural deduction
     * [ ] Fitch-style natural deduction
 - **Sequent calculi** (Gentzen-style sequent calculi)
     - [x] Two-sided sequent calculi
-    - [ ] Hilbert systems in sequent calculi
-    - [ ] Natural deduction in sequent calculi
+    - [ ] Hilbert systems in sequent calculus
+    - [ ] Natural deduction in sequent calculus
 
 ### Semantics
 
