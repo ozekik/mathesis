@@ -7,9 +7,76 @@ from mathesis import forms
 Rule = signed_rules.Rule
 
 
+class EFQ(Rule):
+    def __init__(self, intro: Node):
+        self.intro = intro
+
+    def apply(self, target, tip, counter=count(1)):
+        assert target.sign == sign.POSITIVE, "Sign is not positive"
+        # TODO: Fix this
+        assert str(target.fml) == "⊥", "Not an atom"
+        node = Node(
+            str(self.intro.fml),
+            sign=sign.POSITIVE,
+            fml=self.intro.fml,
+            parent=tip,
+            n=next(counter),
+        )
+        return {
+            "queue_items": [[node]],
+            "counter": counter,
+        }
+
+
 class Negation:
-    Intro = signed_rules.NegativeNegationRule
-    Elim = signed_rules.PositiveNegationRule
+    # Intro = signed_rules.NegativeNegationRule
+    class Intro(Rule):
+        def apply(self, target, tip, counter=count(1)):
+            assert target.sign == sign.NEGATIVE, "Sign is not negative"
+            assert isinstance(target.fml, forms.Negation), "Not a negation"
+            subfml = target.fml.sub
+
+            # TODO: Fix this
+            falsum = forms.Atom("⊥")
+
+            antec = Node(
+                str(subfml), sign=sign.POSITIVE, fml=subfml, parent=tip, n=next(counter)
+            )
+            conseq = Node(
+                str(falsum),
+                sign=sign.NEGATIVE,
+                fml=falsum,
+                parent=antec,
+                n=next(counter),
+            )
+
+            return {
+                "queue_items": [[antec, conseq]],
+                "counter": counter,
+            }
+
+    class Elim(Rule):
+        def __init__(self):
+            pass
+
+        def apply(self, target, tip, counter=count(1)):
+            assert target.sign == sign.POSITIVE, "Sign is not positive"
+            assert isinstance(target.fml, forms.Negation), "Not a negation"
+            subfml = target.fml.sub
+
+            # TODO: Better way to check conditions
+            premises = list(map(lambda x: str(x.fml), target.sequent_node.sequent.left))
+            assert str(subfml) in premises, f"`{str(subfml)}` must be in premises"
+
+            # TODO: Fix this
+            falsum = forms.Atom("⊥")
+            node = Node(
+                str(falsum), sign=sign.POSITIVE, fml=falsum, parent=tip, n=next(counter)
+            )
+            return {
+                "queue_items": [[node]],
+                "counter": counter,
+            }
 
 
 class Conjunction:
