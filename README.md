@@ -91,3 +91,4 @@ pip install mathesis
 - [ ] Type theory
 - [ ] Metatheorems
 - [ ] Output graphical representations of models
+- [ ] Support tptp syntax

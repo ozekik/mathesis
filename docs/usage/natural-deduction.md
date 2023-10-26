@@ -43,7 +43,7 @@ WIP
 
 WIP
 
-## Output as Lemmon-style Proof
+## Output as Suppes-Lemmon-style Proof
 
 WIP
 
