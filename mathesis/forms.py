@@ -162,7 +162,7 @@ class Conjunction(Binary):
         self.subs = subs
 
     def clone(self):
-        pass
+        return Conjunction(*[sub.clone() for sub in self.subs])
 
 
 class Disjunction(Binary):
@@ -174,7 +174,7 @@ class Disjunction(Binary):
         self.subs = subs
 
     def clone(self):
-        pass
+        return Disjunction(*[sub.clone() for sub in self.subs])
 
 
 class Conditional(Binary):
@@ -186,7 +186,7 @@ class Conditional(Binary):
         self.subs = subs
 
     def clone(self):
-        pass
+        return Conditional(*[sub.clone() for sub in self.subs])
 
 
 class Quantifier(Formula):
