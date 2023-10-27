@@ -1,4 +1,4 @@
-# Proofs using Natural Deduction
+# Proof using Natural Deduction
 
 ## Introduction
 

@@ -1,4 +1,4 @@
-# Proofs using Tableau
+# Proof using Tableau
 
 <a href="https://en.wikipedia.org/wiki/Method_of_analytic_tableaux" target="_blank">Semantic tableau</a> (plural: tableaux) is a decision/proof procedure for propositional and quantified logics.
 

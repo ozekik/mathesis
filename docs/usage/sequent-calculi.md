@@ -1,4 +1,4 @@
-# Proofs using Sequent Calculus
+# Proof using Sequent Calculus
 
 <a href="https://en.wikipedia.org/wiki/Sequent_calculus" target="_blank">Sequent calculus</a> (plural: calculi) is a formal proof system based on *sequents*, which normally are expressions of the form $\Gamma \vdash \Delta$, where $\Gamma$ and $\Delta$ are lists or sets of formulas.
 
