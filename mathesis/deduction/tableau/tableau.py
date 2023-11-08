@@ -1,13 +1,12 @@
 import logging
-from typing import Any, List
-from anytree import Node, RenderTree, find_by_attr
-from operator import itemgetter, neg
 from itertools import count
+from operator import itemgetter, neg
 from types import SimpleNamespace
+from typing import Any, List
 
-from anytree import Node
+from anytree import Node, RenderTree, find_by_attr
 
-from mathesis import forms, _utils
+from mathesis import _utils, forms
 from mathesis.deduction.tableau import rules
 
 sign = SimpleNamespace(
@@ -77,6 +76,7 @@ class SignedTableau:
         branch_tips = [
             leaf for leaf in target.leaves if not getattr(leaf, "branch_marked", False)
         ]
+        queue_items = []
         queue_items_all = []
         for tip in branch_tips:
             queue_items = itemgetter("queue_items")(
