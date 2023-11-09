@@ -16,20 +16,20 @@ conclusions = grammar.parse(["B"])
 
 st = SequentTree(premises, conclusions)
 
-Math(st[1].sequent_node.sequent.latex())
+Math(st[1].sequent.latex())
 
 # %%
-st.apply(st[1], rules.NegationLeft())
+st.apply(st[1], rules.Negation.Left())
 print(st.tree())
 
 # %%
-st.apply(st[5], rules.DisjunctionLeft())
+st.apply(st[5], rules.Disjunction.Left())
 print(st.tree())
 
 # %%
-st.apply(st[9], rules.WeakeningRight())
+st.apply(st[9], rules.Weakening.Right())
 print(st.tree())
 
 # %%
-st.apply(st[12], rules.WeakeningRight())
+st.apply(st[12], rules.Weakening.Right())
 print(st.tree())

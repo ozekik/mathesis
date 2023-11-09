@@ -1,24 +1,78 @@
-from operator import itemgetter
+from copy import copy, deepcopy
 from itertools import count
-from copy import copy
+from operator import itemgetter
+from types import SimpleNamespace
+from typing import List
 
-from anytree import Node, RenderTree, PostOrderIter
+from anytree import Node, NodeMixin, PostOrderIter, RenderTree
 
-from mathesis.deduction.tableau import SignedTableau, sign
+from mathesis.forms import Formula
+
+sign = SimpleNamespace(
+    **{
+        "POSITIVE": "True",
+        "NEGATIVE": "False",
+    }
+)
 
 
-class Sequent:
+class Sequent(NodeMixin):
     """A sequent is a pair of premises and conclusions."""
 
-    def __init__(self, left: list, right: list):
-        self.left = left
-        self.right = right
+    __items = []
+
+    def __init__(
+        self, left: List[Formula], right: List[Formula], parent=None, children=None
+    ):
+        super().__init__()
+        items = []
+        for fml in left:
+            item = SequentItem(fml, sign.POSITIVE)
+            items.append(item)
+        for fml in right:
+            item = SequentItem(fml, sign.NEGATIVE)
+            items.append(item)
+        self.items = items
+        self.parent = parent
+        if children:
+            self.children = children
 
     def __getitem__(self, index):
         if index == 0:
             return self.left
         elif index == 1:
             return self.right
+
+    @property
+    def items(self):
+        return self.__items
+
+    @items.setter
+    def items(self, value):
+        for item in value:
+            item.sequent = self
+        self.__items = value
+
+    @property
+    def name(self):
+        return str(self)
+
+    @property
+    def left(self):
+        return [item for item in self.items if item.sign == sign.POSITIVE]
+
+    @property
+    def right(self):
+        return [item for item in self.items if item.sign == sign.NEGATIVE]
+
+    # @property
+    def tautology(self):
+        left = set(str(item.fml) for item in self.left)
+        right = set(str(item.fml) for item in self.right)
+        if left.intersection(right):
+            return True
+        else:
+            return False
 
     def latex(self, arrow=r"\Rightarrow"):
         return "{} {} {}".format(
@@ -34,68 +88,60 @@ class Sequent:
         )
 
 
+class SequentItem:
+    n = None
+    sequent = None
+
+    def __init__(self, fml: Formula, sign, n: int = None, sequent: Sequent = None):
+        self.fml = fml
+        self.sign = sign
+        self.n = n
+        self.sequent = sequent
+
+    def clone(self):
+        clone = deepcopy(self)
+        clone.__dict__ = deepcopy(clone.__dict__)
+        return clone
+
+    @property
+    def name(self):
+        return str(self)
+
+    def __str__(self) -> str:
+        return str(self.fml)
+
+
 class SequentTree:
     """A tree of sequents."""
 
     def __init__(self, premises, conclusions):
-        self._tableau = SignedTableau(premises, conclusions)
         self.counter = count(1)
         self.bookkeeper = dict()
-        left, right = ([], [])
-        for node in (self._tableau.root,) + self._tableau.root.descendants:
-            node.n = next(self.counter)
-            self.bookkeeper[node.n] = node
-            if node.sign == sign.POSITIVE:
-                left.append(node)
-            elif node.sign == sign.NEGATIVE:
-                right.append(node)
+        left, right = (premises, conclusions)
         sequent = Sequent(left, right)
-        self.root = Node(
-            str(sequent),
-            sequent=sequent,
-        )
-        for node in (self._tableau.root,) + self._tableau.root.descendants:
-            node.sequent_node = self.root
+        for item in sequent.items:
+            item.n = next(self.counter)
+            self.bookkeeper[item.n] = item
+        self.root = sequent
 
     def __getitem__(self, index):
         return self.bookkeeper[index]
 
-    def apply(self, target: Node, rule):
-        queue_items = itemgetter("queue_items")(
-            rule.apply(target, target, self.counter)
-        )
-        # print("queue_items", queue_items)
+    def _apply(self, target: Node, rule):
+        queue_items = itemgetter("queue_items")(rule.apply(target, self.counter))
 
-        # NOTE: check if branched
+        new_sequents = []
+
         for branch in queue_items:
-            nodes_in_new_sequent = list(
-                filter(
-                    lambda x: x.n != target.n and not getattr(x, "weakened", False),
-                    list(map(copy, target.sequent_node.sequent[0]))
-                    + list(map(copy, target.sequent_node.sequent[1]))
-                    + branch,
-                )
-            )
-            # print("nodes_in_new_sequent", nodes_in_new_sequent)
-            left, right = ([], [])
-            for node in nodes_in_new_sequent:
-                if node.sign == sign.POSITIVE:
-                    left.append(node)
-                elif node.sign == sign.NEGATIVE:
-                    right.append(node)
-            for node in nodes_in_new_sequent:
-                if node not in branch:
-                    node.n = next(self.counter)
+            for node in branch.items:
                 self.bookkeeper[node.n] = node
-            sequent = Sequent(left, right)
-            sequent_node = Node(
-                str(sequent),
-                sequent=sequent,
-                parent=target.sequent_node,
-            )
-            for node in nodes_in_new_sequent:
-                node.sequent_node = sequent_node
+            branch.parent = target.sequent
+            new_sequents.append(branch)
 
+        return new_sequents
+
+    def apply(self, target: Node, rule):
+        self._apply(target, rule)
         return self
 
     def tree(self, number=True):
@@ -106,14 +152,14 @@ class SequentTree:
                 "{} ⇒ {}".format(
                     ", ".join(
                         map(
-                            lambda x: x.name + (f" {x.n}" if number else ""),
-                            node.sequent[0],
+                            lambda x: str(x) + (f" {x.n}" if number else ""),
+                            node.left,
                         )
                     ),
                     ", ".join(
                         map(
-                            lambda x: x.name + (f" {x.n}" if number else ""),
-                            node.sequent[1],
+                            lambda x: str(x) + (f" {x.n}" if number else ""),
+                            node.right,
                         )
                     ),
                 ),
@@ -130,5 +176,5 @@ class SequentTree:
                 tmpl = r"\UnaryInfC{{${}$}}"
             elif len(node.children) == 2:
                 tmpl = r"\BinaryInfC{{${}$}}"
-            output += tmpl.format(node.sequent.latex()) + "\n"
+            output += tmpl.format(node.latex()) + "\n"
         return """\\begin{{prooftree}}\n{}\\end{{prooftree}}""".format(output)
