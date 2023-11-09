@@ -2,7 +2,7 @@
 
 ## NLTK
 
-[NLTK](https://www.nltk.org/) is a Python library for Natural Language Processing, but it has modules for logic, inference, resolution, and nonmonotonic reasoning.
+[NLTK](https://www.nltk.org/) is a Python library for Natural Language Processing, but it includes some logic-related modules:
 
 - [NLTK :: Sample usage for logic](https://www.nltk.org/howto/logic.html)
 - [NLTK :: Sample usage for inference](https://www.nltk.org/howto/inference.html)
@@ -17,7 +17,7 @@
 ### Cons
 
 - Less flexible syntax
-- Fewer supported proof methods
+- Fewer proof methods supported
 - No support for LaTeX output
 
 ## Others (to be added)
@@ -25,4 +25,4 @@
 - [PyLogics](https://whitemech.github.io/pylogics/)
 - [Logic - SymPy](https://docs.sympy.org/latest/modules/logic.html)
 - [tt: logical tools for logic](https://tt.brianwel.ch/en/latest/)
-- [jon-jacky/FLiP: Logical Framework in Python](https://github.com/jon-jacky/FLiP)
+- [FLiP](https://github.com/jon-jacky/FLiP)

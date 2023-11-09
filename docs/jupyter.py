@@ -33,3 +33,6 @@ print(st.tree())
 # %%
 st.apply(st[11], rules.Weakening.Right())
 print(st.tree())
+
+# %%
+print(st.latex())
