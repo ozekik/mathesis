@@ -31,5 +31,5 @@ st.apply(st[9], rules.Weakening.Right())
 print(st.tree())
 
 # %%
-st.apply(st[12], rules.Weakening.Right())
+st.apply(st[11], rules.Weakening.Right())
 print(st.tree())

@@ -71,7 +71,7 @@ pip install mathesis
     * [ ] Hilbert systems
 - **Natural deduction**
     * [x] Generic natural deduction
-    * [ ] Gentzen-style natural deduction
+    * [x] Gentzen-style natural deduction (Output)
     * [ ] Fitch-style natural deduction
 - **Sequent calculi** (Gentzen-style sequent calculi)
     - [x] Two-sided sequent calculi

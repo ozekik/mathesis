@@ -69,6 +69,7 @@ nav:
       - Proof in Sequent Calculus: usage/sequent-calculi.md
       - Automated Reasoning: usage/automated-reasoning.md
   - Contributing: contributing.md
+  - Alternatives: alternatives.md
   - 🚧 API Reference: []
 
 markdown_extensions:
