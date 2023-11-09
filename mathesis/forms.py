@@ -47,7 +47,9 @@ class Atom(Formula):
         return fml
 
     def clone(self):
-        return deepcopy(self)
+        clone = deepcopy(self)
+        clone.__dict__ = deepcopy(clone.__dict__)
+        return clone
 
     def latex(self):
         return f"{self.symbol}"
@@ -62,6 +64,11 @@ class Atom(Formula):
 class Unary(Formula):
     def __init__(self, sub: Formula):
         self.sub = sub
+
+    def clone(self):
+        clone = deepcopy(self.sub.clone())
+        clone.__dict__ = deepcopy(clone.__dict__)
+        return self.__class__(clone)
 
     @property
     def atoms(self):
@@ -97,13 +104,16 @@ class Negation(Unary):
     connective = "¬"
     connective_latex = r"\neg"
 
-    def clone(self):
-        return Negation(self.sub.clone())
-
 
 class Binary(Formula):
     def __init__(self):
         pass
+
+    def clone(self):
+        clones = [sub.clone() for sub in self.subs]
+        for clone in clones:
+            clone.__dict__ = deepcopy(clone.__dict__)
+        return self.__class__(*clones)
 
     @property
     def atoms(self):
@@ -161,9 +171,6 @@ class Conjunction(Binary):
     def __init__(self, *subs: tuple[Formula]):
         self.subs = subs
 
-    def clone(self):
-        return Conjunction(*[sub.clone() for sub in self.subs])
-
 
 class Disjunction(Binary):
     signature = "Disj"
@@ -173,9 +180,6 @@ class Disjunction(Binary):
     def __init__(self, *subs: tuple[Formula]):
         self.subs = subs
 
-    def clone(self):
-        return Disjunction(*[sub.clone() for sub in self.subs])
-
 
 class Conditional(Binary):
     signature = "Cond"
@@ -184,9 +188,6 @@ class Conditional(Binary):
 
     def __init__(self, *subs: tuple[Formula]):
         self.subs = subs
-
-    def clone(self):
-        return Conditional(*[sub.clone() for sub in self.subs])
 
 
 class Quantifier(Formula):
