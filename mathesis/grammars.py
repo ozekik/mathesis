@@ -34,6 +34,8 @@ class ToFml(Transformer):
 
 
 class Grammar(ABC):
+    """Abstract class for grammars."""
+
     def __repr__(self):
         return self.grammar_rules
 
@@ -62,6 +64,8 @@ class Grammar(ABC):
 
 
 class BasicPropositionalGrammar(Grammar):
+    """Basic grammar for the propositional language."""
+
     grammar_rules = r"""
 ?fml: conjunction
     | disjunction
@@ -95,6 +99,8 @@ _subfml : "(" fml ")" | _unary | atom
 
 
 class BasicGrammar(BasicPropositionalGrammar):
+    """Basic grammar for the first-order language."""
+
     grammar_rules = r"""
 ?fml: conjunction
     | disjunction
