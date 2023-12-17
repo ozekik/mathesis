@@ -46,7 +46,7 @@ class Grammar(ABC):
 
     def parse(self, text_or_list: str | list):
         # print(fml_strings)
-        if type(text_or_list) is list:
+        if isinstance(text_or_list, list):
             fml_strings = text_or_list
             fmls = []
             for fml_string in fml_strings:

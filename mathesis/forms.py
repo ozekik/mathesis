@@ -14,7 +14,7 @@ class Formula:
 
 class Atom(Formula):
     def __init__(self, constant_or_nonzero: str | list):
-        if type(constant_or_nonzero) is list:
+        if isinstance(constant_or_nonzero, list):
             self.predicate, self.terms = (
                 str(constant_or_nonzero[0]),
                 tuple(map(str, constant_or_nonzero[1:])),
