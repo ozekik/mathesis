@@ -616,6 +616,21 @@ files = [
 colorama = ">=0.4"
 
 [[package]]
+name = "griffe-typingdoc"
+version = "0.2.4"
+description = "Griffe extension for PEP 727 – Documentation Metadata in Typing."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "griffe_typingdoc-0.2.4-py3-none-any.whl", hash = "sha256:bc7843c2e8163454252da70c513313b8454c886dd0973637c4690453ecdbb387"},
+    {file = "griffe_typingdoc-0.2.4.tar.gz", hash = "sha256:83c1bf81216dd76d41d7f973f4bb63d2bb34d2f731e0ef3aef450320c80520cb"},
+]
+
+[package.dependencies]
+griffe = ">=0.38"
+typing-extensions = ">=4.7"
+
+[[package]]
 name = "idna"
 version = "3.6"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -2816,4 +2831,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "9fbe4d627d01071dd257f9c39a6a4902bab29de0fba907c4e2a925dcc77197a8"
+content-hash = "9485cbce553ddec9acc853265111ef4e9fe1b97301573407cafc2c1678e7d31c"
