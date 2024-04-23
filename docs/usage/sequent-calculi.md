@@ -8,7 +8,7 @@
 It is initialized with an inference, given as a list of premises and of conclusions.
 Rules are applied to a sequent in a sequent tree with `st.apply(node, rule)` where `st` is a sequent tree.
 
-```python exec="1" result="text" source="above"
+```python exec="1" result="text" source="material-block"
 from mathesis.deduction.sequent_calculus import SequentTree, rules
 from mathesis.grammars import BasicGrammar
 
@@ -35,7 +35,7 @@ A sequent tree object can be rendered in LaTeX with `st.latex()`.
 The LaTeX output uses a `prooftree` environment of `bussproofs` package.
 MathJax supports `bussproofs` package, so you can render the LaTeX output on a Web page.
 
-```python exec="1" result="text" source="above"
+```python exec="1" result="text" source="material-block"
 from mathesis.deduction.sequent_calculus import SequentTree, rules
 from mathesis.grammars import BasicGrammar
 

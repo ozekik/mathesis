@@ -7,7 +7,7 @@
 `mathesis.deduction.tableau.Tableau` is a class for unsigned tableaux.
 It is initialized with an inference, given as a list of premises and of conclusions.
 
-```python exec="1" result="text" source="above"
+```python exec="1" result="text" source="material-block"
 from mathesis.grammars import BasicGrammar
 from mathesis.deduction.tableau import Tableau
 
@@ -24,7 +24,7 @@ A tableau is a tree of nodes, each node being a formula.
 Mathesis automatically indexes the nodes, so that you can access them by their index.
 You can apply a rule to a node of tableau with `tab.apply(node, rule)` where `tab` is a tableau:
 
-```python exec="1" result="text" source="above"
+```python exec="1" result="text" source="material-block"
 from mathesis.grammars import BasicGrammar
 from mathesis.deduction.tableau import Tableau, rules
 
@@ -55,7 +55,7 @@ The tableau is closed if all branches are closed.
 
 A signed tableau is a tableau where each node is signed with a truth value.
 
-```python exec="1" result="text" source="above"
+```python exec="1" result="text" source="material-block"
 from mathesis.grammars import BasicGrammar
 from mathesis.deduction.tableau import SignedTableau, signed_rules
 
@@ -79,7 +79,7 @@ In first-order logic, the rules extend to quantifiers as follows:
 - `UniversalInstantiationRule`
 - `ParticularInstantiationRule`
 
-```python exec="1" result="text" source="above"
+```python exec="1" result="text" source="material-block"
 from mathesis.grammars import BasicGrammar
 from mathesis.deduction.tableau import Tableau, rules
 

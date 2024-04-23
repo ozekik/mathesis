@@ -11,7 +11,7 @@ Formulas are parsed from strings using grammars (languages, syntax).
 
 For example, `¬(A→C)` is parsed as a negation of a conditional of two atomic formulas `A` and `C`.
 
-```python exec="1" result="text" source="above"
+```python exec="1" result="text" source="material-block"
 from mathesis.grammars import BasicGrammar
 
 grammar = BasicGrammar()
@@ -23,7 +23,7 @@ print(fml, repr(fml))
 
 The `symbols` option allows you to customize some symbols used in the grammar.
 
-```python exec="1" result="text" source="above"
+```python exec="1" result="text" source="material-block"
 from mathesis.grammars import BasicGrammar
 
 grammar = BasicGrammar(symbols={"conditional": "⊃"})
@@ -35,7 +35,7 @@ print(fml, repr(fml))
 
 It accepts a list of formulas as well.
 
-```python exec="1" result="text" source="above"
+```python exec="1" result="text" source="material-block"
 from mathesis.grammars import BasicGrammar
 
 grammar = BasicGrammar()
@@ -51,7 +51,7 @@ print([str(fml) for fml in fmls], repr(fmls))
 
 `mathesis.forms.Formula` is the base class for all formulas.
 
-```python exec="1" result="text" source="above"
+```python exec="1" result="text" source="material-block"
 from mathesis.forms import Negation, Conjunction, Disjunction, Conditional, Atom
 
 fml = Negation(Conditional(Atom("A"), Atom("C")))

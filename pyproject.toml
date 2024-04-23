@@ -24,7 +24,7 @@ mkdocs = "^1.5.1"
 mkdocs-material = "^9.1.21"
 mkdocstrings-python = "^1.2.1"
 mkdocs-exclude = "^1.0.2"
-markdown-exec = { extras = ["ansi"], version = "^1.6.0" }
+markdown-exec = { extras = ["ansi"], version = "^1.8.1" }
 mkdocs-jupyter = "^0.24.5"
 griffe-typingdoc = "^0.2.4"
 

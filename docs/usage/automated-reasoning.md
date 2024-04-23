@@ -12,7 +12,7 @@ See [Truth tables](truth-tables.py).
 
 `mathesis.solvers.ClassicalSolver` is a solver for classical propositional logic based on tableau method.
 
-```python exec="1" result="text" source="above"
+```python exec="1" result="text" source="material-block"
 from mathesis.grammars import BasicGrammar
 from mathesis.solvers import ClassicalSolver
 

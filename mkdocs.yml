@@ -24,8 +24,8 @@ theme:
         icon: material/lightbulb
         name: "Switch to light mode"
   features:
-      - navigation.footer
-      - navigation.expand
+    - navigation.footer
+    - navigation.expand
   #   - content.tabs.link
   #   - content.code.annotate
   #   - announce.dismiss
@@ -70,7 +70,10 @@ nav:
       - Automated Reasoning: usage/automated-reasoning.md
   - Contributing: contributing.md
   - Alternatives: alternatives.md
-  - 🚧 API Reference: []
+  # - 🚧 API Reference:
+  #     - "semantics.truth_table":
+  #         - base: reference/semantics/base.md
+  #         - classical: reference/semantics/classical.md
 
 markdown_extensions:
   - tables
@@ -78,6 +81,7 @@ markdown_extensions:
       permalink: true
       title: Page contents
   #   - admonition
+  # - md_in_html
   - pymdownx.tasklist:
       custom_checkbox: false
   - pymdownx.arithmatex:
@@ -89,14 +93,16 @@ markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
-#   - pymdownx.tabbed:
-#       alternate_style: true
+        #   - pymdownx.tabbed:
+        #       alternate_style: true
+
+
   - pymdownx.superfences:
       custom_fences:
-      - name: python
-        class: python
-        validator: !!python/name:markdown_exec.validator
-        format: !!python/name:markdown_exec.formatter
+        - name: python
+          class: python
+          validator: !!python/name:markdown_exec.validator
+          format: !!python/name:markdown_exec.formatter
 
 watch:
   - mathesis
@@ -117,16 +123,46 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: [.]
           options:
+            extensions:
+              - griffe_typingdoc
+            show_root_heading: true
+            # show_if_no_docstring: true
+            show_source: false
+            inherited_members: true
             members_order: source
             separate_signature: true
+            unwrap_annotated: true
             filters: ["!^_"]
-            docstring_options:
-              ignore_init_summary: true
             merge_init_into_class: true
-            # extensions:
-            #   - docs/plugins/griffe_doclinks.py
+            docstring_section_style: spacy
+            signature_crossrefs: true
+            show_symbol_type_heading: true # insiders
+            show_symbol_type_toc: true # insiders
+            show_submodules: true
+  # - mkdocstrings:
+  #     handlers:
+  #       python:
+  #         paths: [.]
+  #         options:
+  #           extensions:
+  #             - griffe_typingdoc
+  #           show_root_heading: true
+  #           show_if_no_docstring: true
+  #           members_order: source
+  #           separate_signature: true
+  #           filters: ["!^_"]
+  #           docstring_options:
+  #             ignore_init_summary: true
+  #           merge_init_into_class: true
+  #           # inherited_members: true
+  #           show_submodules: true
+  #           docstring_section_style: spacy
+  #           signature_crossrefs: true
+  #           show_symbol_type_heading: true
+  #           show_symbol_type_toc: true
+  #           # extensions:
+  #           #   - docs/plugins/griffe_doclinks.py
   # - mkdocs-simple-hooks:
   #     hooks:
   #       on_pre_build: "docs.plugins.main:on_pre_build"

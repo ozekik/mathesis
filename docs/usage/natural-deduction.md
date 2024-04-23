@@ -12,7 +12,7 @@ Natural deduction is a proof system that consists of elimination rules and intro
 - you can apply an **elimination rule** *up-to-down* to the premises of a (sub)proof to obtain new premises.
 - Similarly, you can apply an **introduction rule** *down-to-up* to the conclusion of a (sub)proof and convert it into new subproofs.
 
-```python exec="1" result="text" source="above"
+```python exec="1" result="text" source="material-block"
 from mathesis.grammars import BasicGrammar
 from mathesis.deduction.natural_deduction import NDTree, rules
 
@@ -40,7 +40,7 @@ print(deriv.tree())
 
 (WIP) Mathesis has an experimental support for rendering a natural deduction proof as a Gentzen-style proof and LaTeX code.
 
-```python exec="1" result="text" source="above"
+```python exec="1" result="text" source="material-block"
 from mathesis.grammars import BasicGrammar
 from mathesis.deduction.natural_deduction import NDTree, rules
 
