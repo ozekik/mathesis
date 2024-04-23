@@ -1,9 +1,6 @@
 import logging
 from collections import namedtuple
-from operator import itemgetter
 from typing import List
-
-from anytree import Node, RenderTree
 
 from mathesis import forms
 from mathesis.deduction.tableau import Tableau, rules

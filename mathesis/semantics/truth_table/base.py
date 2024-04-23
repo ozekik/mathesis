@@ -1,18 +1,19 @@
+from __future__ import annotations
+
 import logging
 from itertools import permutations, product
-from typing import List, Set
 
 from anytree import Node, NodeMixin, PostOrderIter, RenderTree
-from prettytable import PrettyTable, PLAIN_COLUMNS
+from prettytable import PLAIN_COLUMNS, PrettyTable
 
 from mathesis import forms
 
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.NullHandler())
+_logger = logging.getLogger(__name__)
+_logger.addHandler(logging.NullHandler())
 
 
 class ConnectiveClause:
-    column_names: List[str]
+    column_names: list[str]
     table: dict
     truth_value_symbols: None
 
@@ -97,16 +98,16 @@ class AssignedNode(AssignedNodeBase, NodeMixin):
 class TruthTable:
     """The truth table class."""
 
-    truth_values: Set = (set(),)
-    designated_values: Set = (set(),)
+    truth_values: set = set()
+    designated_values: set = set()
     clauses = {}
 
     def __init__(
         self,
-        formula_or_premises: List[forms.Formula],
-        conclusions: List[forms.Formula] = [],
+        formula_or_premises: list[forms.Formula],
+        conclusions: list[forms.Formula] = [],
     ):
-        if type(formula_or_premises) is list:
+        if isinstance(formula_or_premises, list):
             raise NotImplementedError()
         else:
             self.premises = [formula_or_premises]
@@ -121,25 +122,25 @@ class TruthTable:
             # assigned_node.truth_value = assigned_node._truth_value
             pass
         elif isinstance(assigned_node.fml, forms.Negation):
-            if not forms.Negation in self.clauses:
+            if forms.Negation not in self.clauses:
                 raise NotImplementedError("Negation clause not implemented")
             assigned_node.truth_value = self.clauses[forms.Negation].apply(
                 assigned_node.children[0].truth_value
             )
         elif isinstance(assigned_node.fml, forms.Conjunction):
-            if not forms.Conjunction in self.clauses:
+            if forms.Conjunction not in self.clauses:
                 raise NotImplementedError("Conjunction clause not implemented")
             assigned_node.truth_value = self.clauses[forms.Conjunction].apply(
                 *tuple(child.truth_value for child in assigned_node.children)
             )
         elif isinstance(assigned_node.fml, forms.Disjunction):
-            if not forms.Disjunction in self.clauses:
+            if forms.Disjunction not in self.clauses:
                 raise NotImplementedError("Disjunction clause not implemented")
             assigned_node.truth_value = self.clauses[forms.Disjunction].apply(
                 *tuple(child.truth_value for child in assigned_node.children)
             )
         elif isinstance(assigned_node.fml, forms.Conditional):
-            if not forms.Conditional in self.clauses:
+            if forms.Conditional not in self.clauses:
                 raise NotImplementedError("Conditional clause not implemented")
             assigned_node.truth_value = self.clauses[forms.Conditional].apply(
                 *tuple(child.truth_value for child in assigned_node.children)
@@ -149,7 +150,7 @@ class TruthTable:
                 f"Clause for {type(assigned_node.fml)} not implemented"
             )
 
-    def wrap_fml(self, fml):
+    def _wrap_fml(self, fml):
         def transformer(fml):
             node = AssignedNode(str(fml), fml=fml)
             if isinstance(fml, forms.Binary):
@@ -171,7 +172,7 @@ class TruthTable:
             values = []
             for tv in product(self.truth_values, repeat=len(atom_symbols)):
                 assignments = dict(zip(atom_symbols, tv))
-                tv_fml = self.wrap_fml(fml)
+                tv_fml = self._wrap_fml(fml)
                 tv_fml.assign_atom_values(assignments)
                 for node in PostOrderIter(tv_fml):
                     self.compute_truth_value(node)
@@ -194,7 +195,7 @@ class TruthTable:
             atom_symbols = sorted(atom_symbols)
             for tv in product(self.truth_values, repeat=len(atom_symbols)):
                 assignments = dict(zip(atom_symbols, tv))
-                tree = self.wrap_fml(fml)
+                tree = self._wrap_fml(fml)
                 # print(RenderTree(tree))
                 tree.assign_atom_values(assignments)
                 # print(tree.truth_value)

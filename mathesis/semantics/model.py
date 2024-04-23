@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from itertools import permutations
-from typing import Any, Callable, Dict, List, Set, Tuple
+from typing import Any, Callable, Set
 
 from mathesis import forms
 from mathesis.semantics.truth_table import classical as truth_table
@@ -8,9 +10,11 @@ from mathesis.semantics.truth_table import classical as truth_table
 def normalize_predicates(predicates):
     return dict(
         map(
-            lambda x: (x[0], tuple((v,) for v in x[1]))
-            if (len(x[1]) > 0 and type(list(x[1])[0]) is not tuple)
-            else x,
+            lambda x: (
+                (x[0], tuple((v,) for v in x[1]))
+                if (len(x[1]) > 0 and type(list(x[1])[0]) is not tuple)
+                else x
+            ),
             predicates.items(),
         )
     )
@@ -20,18 +24,18 @@ class Model:
     def __init__(
         self,
         domain: Set[Any] = set(),
-        predicates: Dict[str, Set[Any]] = dict(),
-        constants: Dict[str, Any] = dict(),
-        functions: Dict[str, Callable] = dict(),
+        predicates: dict[str, Set[Any]] = dict(),
+        constants: dict[str, Any] = dict(),
+        functions: dict[str, Callable] = dict(),
     ):
         """
         Args:
             domain (Set): a set of objects
-            predicates (Dict): a dictionary with predicate symbols as keys and sets of tuples of objects as values,
+            predicates (dict): a dictionary with predicate symbols as keys and sets of tuples of objects as values,
                 or a function that assigns sets of tuples of objects to predicate symbols
-            constants (Dict): a dictionary with constant symbols as keys and objects as values,
+            constants (dict): a dictionary with constant symbols as keys and objects as values,
                 or a function that assigns objects to constants
-            functions (Dict): a dictionary with function symbols as keys and functions over domain as values
+            functions (dict): a dictionary with function symbols as keys and functions over domain as values
         """
         self.domain = domain
         # Make sure that the value of a predicate is a list of tuples
@@ -48,13 +52,13 @@ class Model:
     #     elif term in self.constants:
     #         return self.denotations.get(term, term)
 
-    def valuate(self, fml: forms.Formula, variable_assignment: Dict[str, Any] = dict()):
+    def valuate(self, fml: forms.Formula, variable_assignment: dict[str, Any] = dict()):
         """
         Valuates a formula in a model.
 
         Args:
             fml (Formula): a formula
-            variable_assignment (Dict): a dictionary with variable symbols as keys and assigned objects as values
+            variable_assignment (dict): a dictionary with variable symbols as keys and assigned objects as values
         """
         if isinstance(fml, forms.Atom):
             # Denotations of the terms, a list to be converted to a tuple

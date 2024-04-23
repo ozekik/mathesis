@@ -106,6 +106,8 @@ class Negation(Unary):
 
 
 class Binary(Formula):
+    subs: tuple[Formula, Formula]
+
     def __init__(self):
         pass
 
@@ -168,8 +170,8 @@ class Conjunction(Binary):
     connective = "∧"
     connective_latex = r"\land"
 
-    def __init__(self, *subs: tuple[Formula]):
-        self.subs = subs
+    def __init__(self, sub1: Formula, sub2: Formula):
+        self.subs = (sub1, sub2)
 
 
 class Disjunction(Binary):
@@ -177,8 +179,8 @@ class Disjunction(Binary):
     connective = "∨"
     connective_latex = r"\lor"
 
-    def __init__(self, *subs: tuple[Formula]):
-        self.subs = subs
+    def __init__(self, sub1: Formula, sub2: Formula):
+        self.subs = (sub1, sub2)
 
 
 class Conditional(Binary):
@@ -186,8 +188,8 @@ class Conditional(Binary):
     connective = "→"
     connective_latex = r"\to"
 
-    def __init__(self, *subs: tuple[Formula]):
-        self.subs = subs
+    def __init__(self, sub1: Formula, sub2: Formula):
+        self.subs = (sub1, sub2)
 
 
 class Quantifier(Formula):

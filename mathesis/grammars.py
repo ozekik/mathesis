@@ -1,10 +1,18 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+from abc import ABC
 
 from lark import Lark, Transformer
 
-from mathesis.forms import *
+from mathesis.forms import (
+    Atom,
+    Conditional,
+    Conjunction,
+    Disjunction,
+    Negation,
+    Particular,
+    Universal,
+)
 
 
 class ToFml(Transformer):
@@ -36,12 +44,14 @@ class ToFml(Transformer):
 class Grammar(ABC):
     """Abstract class for grammars."""
 
+    grammar_rules: str
+
     def __repr__(self):
         return self.grammar_rules
 
-    @abstractmethod
-    def parse(self, text_or_list: str | list):
-        raise NotImplementedError()
+    # @abstractmethod
+    # def parse(self, text_or_list: str | list):
+    #     raise NotImplementedError()
 
     def __init__(self):
         self.grammar = Lark(self.grammar_rules, start="fml")

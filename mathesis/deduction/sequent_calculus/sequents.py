@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from copy import copy, deepcopy
 from itertools import count
 from operator import itemgetter
@@ -92,7 +94,9 @@ class SequentItem:
     n = None
     sequent = None
 
-    def __init__(self, fml: Formula, sign, n: int = None, sequent: Sequent = None):
+    def __init__(
+        self, fml: Formula, sign, n: int | None = None, sequent: Sequent | None = None
+    ):
         self.fml = fml
         self.sign = sign
         self.n = n
