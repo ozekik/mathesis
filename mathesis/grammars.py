@@ -57,6 +57,12 @@ class Grammar(ABC):
         self.grammar = Lark(self.grammar_rules, start="fml")
 
     def parse(self, text_or_list: str | list):
+        """Parse a string or a list of strings into formula object(s).
+
+        Args:
+            text_or_list (str | list): A string or a list of strings representing formula(s).
+        """
+
         # print(fml_strings)
         if isinstance(text_or_list, list):
             fml_strings = text_or_list

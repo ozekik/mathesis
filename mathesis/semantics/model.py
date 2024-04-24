@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from itertools import permutations
-from typing import Any, Callable, Set
+from typing import Any, Callable
 
 from mathesis import forms
 from mathesis.semantics.truth_table import classical as truth_table
 
 
-def normalize_predicates(predicates):
+def _normalize_predicates(predicates: dict[str, set[Any]]):
     return dict(
         map(
             lambda x: (
@@ -21,25 +21,29 @@ def normalize_predicates(predicates):
 
 
 class Model:
+    """
+    A set-theoretic model.
+    """
+
     def __init__(
         self,
-        domain: Set[Any] = set(),
-        predicates: dict[str, Set[Any]] = dict(),
+        domain: set[Any] = set(),
+        predicates: dict[str, set[Any]] = dict(),
         constants: dict[str, Any] = dict(),
         functions: dict[str, Callable] = dict(),
     ):
         """
         Args:
-            domain (Set): a set of objects
-            predicates (dict): a dictionary with predicate symbols as keys and sets of tuples of objects as values,
-                or a function that assigns sets of tuples of objects to predicate symbols
-            constants (dict): a dictionary with constant symbols as keys and objects as values,
-                or a function that assigns objects to constants
-            functions (dict): a dictionary with function symbols as keys and functions over domain as values
+            domain: A set of objects.
+            predicates: A dictionary with predicate symbols as keys and sets of tuples of objects as values,
+                or a function that assigns sets of tuples of objects to predicate symbols.
+            constants: A dictionary with constant symbols as keys and objects as values,
+                or a function that assigns objects to constants.
+            functions: A dictionary with function symbols as keys and functions over domain as values.
         """
         self.domain = domain
         # Make sure that the value of a predicate is a list of tuples
-        predicates = normalize_predicates(predicates)
+        predicates = _normalize_predicates(predicates)
         self.predicates = predicates
         self.constants = constants
         self.functions = functions
@@ -54,11 +58,11 @@ class Model:
 
     def valuate(self, fml: forms.Formula, variable_assignment: dict[str, Any] = dict()):
         """
-        Valuates a formula in a model.
+        Valuate a formula in a model.
 
         Args:
-            fml (Formula): a formula
-            variable_assignment (dict): a dictionary with variable symbols as keys and assigned objects as values
+            fml: A formula.
+            variable_assignment: A dictionary with variable symbols as keys and assigned objects as values
         """
         if isinstance(fml, forms.Atom):
             # Denotations of the terms, a list to be converted to a tuple
@@ -162,9 +166,15 @@ class Model:
                 )
             )
 
-    def validates(self, premises=[], conclusions=[]):
+    def validates(
+        self, premises: list[forms.Formula] = [], conclusions: list[forms.Formula] = []
+    ):
         """
-        Returns true if the model validates the inference given premises and conclusions.
+        Return true if the model validates the inference given premises and conclusions.
+
+        Args:
+            premises: A list of premise formulas.
+            conclusions: A list of conclusion formulas.
         """
 
         # List up all free variables in premises and conclusions
@@ -214,7 +224,7 @@ class Model:
 #     def __init__(
 #         self,
 #         states: List[Model] = [],
-#         accessibility_relations: Set[Tuple[Any, Any]] = set(),
+#         accessibility_relations: set[Tuple[Any, Any]] = set(),
 #     ):
 #         self.states = states
 #         self.accessibility_relations = accessibility_relations

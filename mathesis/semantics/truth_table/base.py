@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import logging
-from itertools import permutations, product
+from itertools import product
 
-from anytree import Node, NodeMixin, PostOrderIter, RenderTree
+from anytree import NodeMixin, PostOrderIter, RenderTree
 from prettytable import PLAIN_COLUMNS, PrettyTable
 
 from mathesis import forms
@@ -96,7 +96,12 @@ class AssignedNode(AssignedNodeBase, NodeMixin):
 
 
 class TruthTable:
-    """The truth table class."""
+    """Base class for truth tables.
+
+    Args:
+        formula_or_premises (list[forms.Formula] | forms.Formula): A list of formulas or a single formula.
+        conclusions (list[forms.Formula]): A list of formulas.
+    """
 
     truth_values: set = set()
     designated_values: set = set()

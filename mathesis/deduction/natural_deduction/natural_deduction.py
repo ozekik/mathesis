@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections import namedtuple
 
 from anytree import Node, PostOrderIter, RenderTree
@@ -7,7 +9,7 @@ from mathesis.forms import Formula
 
 
 class NDTree:
-    def __init__(self, premises, conclusion):
+    def __init__(self, premises: list[Formula], conclusion: Formula):
         assert isinstance(conclusion, Formula), "Conclusion must be a single formula"
         self._sequent_tree = SequentTree(premises, [conclusion])
         self.bookkeeper = self._sequent_tree.bookkeeper
