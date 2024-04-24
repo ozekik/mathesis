@@ -35,9 +35,11 @@ pip install mathesis
 
 ### Propositional logics
 
-- **Classical propositional logic:** Truth table, Tableau, Sequent calculus
-- **Many-valued logics:** Truth table
-- **Intuitionistic logic:** Sequent calculus
+|   | Truth Table | Tableau | Natural Deduction | Sequent Calculus |
+|---:|:---:|:---:|:---:|:---:|
+| Classical logic | ✅ | ✅ | ✅ | ✅ |
+| Many-valued logics | ✅ | - | - | - |
+| Intuitionistic logic | n/a | - | - | ✅ |
 
 #### In Progress
 
@@ -49,7 +51,9 @@ pip install mathesis
 
 ### First-order logics (quantified, predicate logics)
 
-- **Classical first-order logic:** Tableau, Set-theoretic model
+|   | Model | Tableau | Natural Deduction | Sequent Calculus |
+|---:|:---:|:---:|:---:|:---:|
+| Classical logic | ✅ | ✅ | - | - |
 
 #### In Progress
 
