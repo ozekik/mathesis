@@ -5,6 +5,7 @@ site_url: https://ozekik.github.io/mathesis/
 
 theme:
   name: "material"
+  language: en
   custom_dir: "docs/overrides"
   # font:
   #   text: Inter
@@ -26,12 +27,14 @@ theme:
   features:
     - navigation.footer
     - navigation.expand
+    - content.code.copy
   #   - content.tabs.link
   #   - content.code.annotate
   #   - announce.dismiss
   #   - navigation.tabs
   icon:
     logo: simple/matrix
+    repo: fontawesome/brands/github
   # favicon: "favicon.png"
 
 repo_name: ozekik/mathesis
@@ -71,9 +74,11 @@ nav:
   - Contributing: contributing.md
   - Alternatives: alternatives.md
   # - 🚧 API Reference:
+  #     - "grammars": reference/grammars/index.md
   #     - "semantics.truth_table":
   #         - base: reference/semantics/base.md
   #         - classical: reference/semantics/classical.md
+  #     - "semantics.model": reference/model.md
 
 markdown_extensions:
   - tables
@@ -124,8 +129,8 @@ plugins:
       handlers:
         python:
           options:
-            extensions:
-              - griffe_typingdoc
+            # extensions:
+            #   - griffe_typingdoc
             show_root_heading: true
             # show_if_no_docstring: true
             show_source: false

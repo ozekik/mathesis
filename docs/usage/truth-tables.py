@@ -1,9 +1,9 @@
 # %% [markdown]
 # # Truth tables
 
-# ## Show truth tables for the connectives
+# ## Show truth tables for connectives
 
-# Truth functions are defined as "clauses" in mathesis.
+# Truth functions are defined as _clauses_ in mathesis.
 # You can show the truth tables for the clauses in HTML in JupyerLab/Jupyter Notebook:
 
 # %%
