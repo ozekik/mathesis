@@ -38,7 +38,7 @@ print(deriv.tree())
 
 ## Render as Gentzen-style Proof
 
-(WIP) Mathesis has an experimental support for rendering a natural deduction proof as a Gentzen-style proof and LaTeX code.
+(WIP) Mathesis has an experimental support for rendering a natural deduction proof as a Gentzen-style proof or its LaTeX code.
 
 ```python exec="1" result="text" source="material-block"
 from mathesis.grammars import BasicGrammar
