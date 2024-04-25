@@ -1,32 +1,50 @@
-from anytree import Node
+from copy import deepcopy
 from itertools import count
-from copy import copy
+
+from anytree import Node
 
 from mathesis import forms
+from mathesis.deduction.sequent_calculus.rules import Rule, SequentItem, _apply, sign
+
+# from mathesis.deduction.natural_deduction.rules import _apply
 
 
-class Rule:
-    pass
+class ModusPonens(Rule):
+    def apply(self, target, counter=count(1)):
+        assert target.sign == sign.POSITIVE, "Cannot apply elimination rule"
+        assert isinstance(target.fml, forms.Conditional), "Not a conditional"
+        antec, conseq = target.fml.subs
 
+        # TODO: Better way to check conditions
+        antec = next(
+            filter(lambda x: str(x.fml) == str(antec), target.sequent.left),
+            None,
+        )
+        assert antec, "Antecendent does not match"
 
-# class ModusPonens(Rule):
-#     def apply(self, target, tip, antecendent=None, counter=count(1)):
-#         conditional = forms.Conditional(antecendent, target.fml)
-#         nodeL = Node(
-#             str(antecendent),
-#             sign=target.sign,
-#             fml=antecendent,
-#             parent=tip,
-#             n=next(counter),
-#         )
-#         nodeR = Node(
-#             str(conditional),
-#             sign=target.sign,
-#             fml=conditional,
-#             parent=tip,
-#             n=next(counter),
-#         )
-#         return {
-#             "queue_items": [nodeL, nodeR],
-#             "counter": counter,
-#         }
+        # conclusion = str(target.sequent.right[0].fml)
+        # print(conclusion)
+        # assert str(conseq) == conclusion, "Consequent does not match"
+
+        conseq = SequentItem(conseq, sign=sign.POSITIVE, n=next(counter))
+        sequent = _apply(target, [conseq], counter)
+
+        # # Subproof
+        # conseq.subproof = Node(
+        #     conseq,
+        #     children=[
+        #         deepcopy(antec.subproof),
+        #         deepcopy(target.subproof),
+        #     ],
+        #     parent=target.sequent.right[0].subproof,
+        # )
+        # # target.sequent.right[0].subproof = sequent.right[0].subproof
+        # sequent.right[0].subproof = target.sequent.right[0].subproof
+
+        # if sequent.tautology():
+        #     target.sequent.right[0].subproof.children = conseq.subproof.children
+
+        return {
+            "queue_items": [sequent],
+            "counter": counter,
+        }

@@ -1,104 +1,95 @@
 import logging
-from typing import Any, List
-from anytree import Node, RenderTree, find_by_attr
-from operator import itemgetter, neg
 from itertools import count
+from operator import itemgetter
 from types import SimpleNamespace
+from typing import Any
 
-from anytree import Node
+from anytree import Node, RenderTree, find_by_attr
 
-from mathesis import forms, _utils
-from mathesis.deduction.tableau import rules
+from mathesis import _utils, forms
+from mathesis.deduction.sequent_calculus import SequentTree
+from mathesis.forms import Formula
+from mathesis.deduction.hilbert.axioms import Axiom, _apply_axiom
 
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.NullHandler())
+_logger = logging.getLogger(__name__)
+_logger.addHandler(logging.NullHandler())
 
 
-# class Hilbert:
-#     counter = count(1)
+class Hilbert:
+    counter = count(1)
 
-#     def __init__(
-#         self, premises: List[forms.Formula], conclusions: List[forms.Formula] = []
-#     ):
-#         self.counter = count(1)
-#         self.root = None
-#         parent = None
-#         for fml in premises:
-#             node = Node(
-#                 str(fml),
-#                 sign=sign.POSITIVE,
-#                 fml=fml,
-#                 n=next(self.counter),
-#             )
-#             if not self.root:
-#                 self.root = node
-#             if parent:
-#                 node.parent = parent
-#             parent = node
-#         for fml in conclusions:
-#             node = Node(
-#                 str(fml),
-#                 sign=sign.NEGATIVE,
-#                 fml=fml,
-#                 n=next(self.counter),
-#             )
-#             if not self.root:
-#                 self.root = node
-#             if parent:
-#                 node.parent = parent
-#             parent = node
+    def __init__(self, premises: list[Formula], conclusion: Formula):
+        assert isinstance(conclusion, Formula), "Conclusion must be a single formula"
+        self._sequent_tree = SequentTree(premises, [conclusion])
+        self.bookkeeper = self._sequent_tree.bookkeeper
+        self.counter = self._sequent_tree.counter
 
-#     def __getitem__(self, index):
-#         return find_by_attr(self.root, name="n", value=index)
+        # Proof tree
+        for item in self._sequent_tree.root.left:
+            item.subproof = Node(item, children=[])
+        self._sequent_tree.root.right[0].subproof = Node(
+            self._sequent_tree.root.right[0],
+            children=[item.subproof for item in self._sequent_tree.root.left],
+        )
 
-#     def check_close(self, node1, node2):
-#         return node1.name == node2.name and node1.sign != node2.sign
+    def __getitem__(self, index):
+        return self.bookkeeper[index]
 
-#     def is_closed(self):
-#         logger.debug(("leaves: %s", self.root.leaves))
-#         if all(getattr(node, "marked", False) for node in self.root.leaves):
-#             return True
-#         return False
+    def axiom(self, target, axiom: Axiom):
+        res = _apply_axiom(target, axiom.formula, self.counter)
+        queue_items = res["queue_items"]
 
-#     def apply(self, target: Node, rule: rules.Rule):
-#         self.apply_and_queue(target, rule)
-#         return self
+        # new_sequents = []
 
-#     def apply_and_queue(self, target: Node, rule: rules.Rule, all=True, flatten=True):
-#         branch_tips = [
-#             leaf for leaf in target.leaves if not getattr(leaf, "branch_marked", False)
-#         ]
-#         queue_items_all = []
-#         for tip in branch_tips:
-#             queue_items = itemgetter("queue_items")(
-#                 rule.apply(target, tip, self.counter)
-#             )
-#             # NOTE: check if newly queued nodes are to be marked
-#             flattened_queue_items = list(_utils.flatten_list(queue_items))
-#             for node in flattened_queue_items:
-#                 ancestor = node.parent
-#                 while ancestor is not None:
-#                     if self.check_close(node, ancestor):
-#                         node.marked = True
-#                         node.branch_marked = True
-#                         for desc in node.descendants:
-#                             desc.branch_marked = True
-#                         break
-#                     ancestor = ancestor.parent
-#             queue_items_all += flattened_queue_items
-#         return queue_items_all if all else queue_items
+        for branch in queue_items:
+            for node in branch.items:
+                self.bookkeeper[node.n] = node
+            branch.parent = target.sequent
+            # new_sequents.append(branch)
 
-#     def htree(self):
-#         output = ""
-#         for pre, fill, node in RenderTree(self.root):
-#             output += "{}{} {} {}{}\n".format(
-#                 pre,
-#                 node.sign,
-#                 node.name,
-#                 node.n,
-#                 " ×" if getattr(node, "marked", False) else "",
-#             )
-#         return output
+        return self
 
-#     def tree(self):
-#         return self.htree()
+    def apply(self, target: Node, rule):
+        res = rule.apply(target, self.counter)
+        queue_items = res["queue_items"]
+
+        # new_sequents = []
+
+        for branch in queue_items:
+            for node in branch.items:
+                self.bookkeeper[node.n] = node
+            branch.parent = target.sequent
+            # new_sequents.append(branch)
+
+        return self
+
+    def tree(self, style=None, number=True):
+        if style == "gentzen":
+            output = ""
+            root = self._sequent_tree.root.right[0].subproof
+            for pre, fill, node in RenderTree(root):
+                output += "{}{} {}\n".format(
+                    pre,
+                    f"[{node.name}]" if getattr(node, "marked", False) else node.name,
+                    # self.proof_tree.mapping[node].n,
+                    " ×" if getattr(node, "marked", False) else "",
+                )
+            return output
+        else:
+            return self._sequent_tree.tree(number=number)
+
+    # def latex(self, number=False, arrow=r"\Rightarrow"):
+    #     output = ""
+    #     root = self._sequent_tree.root.right[0].subproof
+    #     for node in PostOrderIter(root):
+    #         tmpl = ""
+    #         if len(node.children) == 0:
+    #             tmpl = r"\AxiomC{{${}$}}"
+    #         elif len(node.children) == 1:
+    #             tmpl = r"\UnaryInfC{{${}$}}"
+    #         elif len(node.children) == 2:
+    #             tmpl = r"\BinaryInfC{{${}$}}"
+    #         elif len(node.children) == 3:
+    #             tmpl = r"\TrinaryInfC{{${}$}}"
+    #         output += tmpl.format(node.name.fml.latex()) + "\n"
+    #     return """\\begin{{prooftree}}\n{}\\end{{prooftree}}""".format(output)
