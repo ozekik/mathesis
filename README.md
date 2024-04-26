@@ -92,7 +92,7 @@ pip install mathesis
 - Parsing with [lark](https://github.com/lark-parser/lark)
 - Trees with [anytree](https://github.com/c0fec0de/anytree)
 
-## Todos
+## Roadmap
 
 - [ ] Add tests
 - [ ] Hilbert systems
