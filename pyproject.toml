@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mathesis"
-version = "0.5.1"
+version = "0.5.2"
 description = "Formal logic library in Python for humans"
 authors = ["Kentaro Ozeki <32771324+ozekik@users.noreply.github.com>"]
 readme = "README.md"
