@@ -99,8 +99,8 @@ class TruthTable:
     """Base class for truth tables.
 
     Args:
-        formula_or_premises (list[forms.Formula] | forms.Formula): A list of formulas or a single formula.
-        conclusions (list[forms.Formula]): A list of formulas.
+        formula_or_formulas: A single formula or a list of formulas.
+        conclusions: A list of formulas.
     """
 
     truth_values: set = set()
@@ -109,13 +109,14 @@ class TruthTable:
 
     def __init__(
         self,
-        formula_or_premises: list[forms.Formula],
-        conclusions: list[forms.Formula] = [],
+        formula_or_formulas: list[forms.Formula] | forms.Formula,
+        conclusions: list[forms.Formula] = [],  # TODO: Distinction between [] and None
     ):
-        if isinstance(formula_or_premises, list):
-            raise NotImplementedError()
+        if isinstance(formula_or_formulas, list):
+            # raise NotImplementedError()
+            self.premises = formula_or_formulas
         else:
-            self.premises = [formula_or_premises]
+            self.premises = [formula_or_formulas]
 
         self.conclusions = conclusions
 
@@ -171,21 +172,59 @@ class TruthTable:
         return wrapped_fml
 
     def is_valid(self):
+        atom_symbols = set()
+        # Extract all atomic symbols in the formulas
         for fml in self.premises + self.conclusions:
-            atom_symbols = fml.atoms.keys()
-            atom_symbols = sorted(atom_symbols)
-            values = []
-            for tv in product(self.truth_values, repeat=len(atom_symbols)):
+            atom_symbols.update(fml.atoms.keys())
+        atom_symbols = sorted(list(atom_symbols))
+
+        premise_values = []
+        conclusion_values = []
+
+        for tv in product(self.truth_values, repeat=len(atom_symbols)):
+            for fml in self.premises:
                 assignments = dict(zip(atom_symbols, tv))
                 tv_fml = self._wrap_fml(fml)
                 tv_fml.assign_atom_values(assignments)
                 for node in PostOrderIter(tv_fml):
                     self.compute_truth_value(node)
-                values.append(tv_fml.truth_value)
-            if all([value in self.designated_values for value in values]):
+                premise_values.append(tv_fml.truth_value)
+
+            for fml in self.conclusions:
+                assignments = dict(zip(atom_symbols, tv))
+                tv_fml = self._wrap_fml(fml)
+                tv_fml.assign_atom_values(assignments)
+                for node in PostOrderIter(tv_fml):
+                    self.compute_truth_value(node)
+                conclusion_values.append(tv_fml.truth_value)
+
+        # print(premise_values)
+
+        if not self.conclusions:
+            if all([value in self.designated_values for value in premise_values]):
                 return True
             else:
                 return False
+        else:
+            # TODO: Implement for inference validity
+            raise NotImplementedError()
+
+    # def is_valid(self):
+    #     for fml in self.premises + self.conclusions:
+    #         atom_symbols = fml.atoms.keys()
+    #         atom_symbols = sorted(atom_symbols)
+    #         values = []
+    #         for tv in product(self.truth_values, repeat=len(atom_symbols)):
+    #             assignments = dict(zip(atom_symbols, tv))
+    #             tv_fml = self._wrap_fml(fml)
+    #             tv_fml.assign_atom_values(assignments)
+    #             for node in PostOrderIter(tv_fml):
+    #                 self.compute_truth_value(node)
+    #             values.append(tv_fml.truth_value)
+    #         if all([value in self.designated_values for value in values]):
+    #             return True
+    #         else:
+    #             return False
 
     def counterexample(self):
         pass
@@ -195,34 +234,76 @@ class TruthTable:
         table.align = "c"
         table.format = True
 
+        atom_symbols = set()
+        # Extract all atomic symbols in the formulas
         for fml in self.premises + self.conclusions:
-            atom_symbols = fml.atoms.keys()
-            atom_symbols = sorted(atom_symbols)
-            for tv in product(self.truth_values, repeat=len(atom_symbols)):
-                assignments = dict(zip(atom_symbols, tv))
+            atom_symbols.update(fml.atoms.keys())
+        atom_symbols = sorted(list(atom_symbols))
+
+        for tv in product(self.truth_values, repeat=len(atom_symbols)):
+            assignments = dict(zip(atom_symbols, tv))
+            formula_row_segments = []
+            for fml in self.premises + self.conclusions:
                 tree = self._wrap_fml(fml)
                 # print(RenderTree(tree))
                 tree.assign_atom_values(assignments)
                 # print(tree.truth_value)
                 # print(RenderTree(tree))
+                atom_value_pairs = []
+                nonatom_value_pairs = []
                 field_names = []
                 row = []
+
                 for node in PostOrderIter(tree):
                     self.compute_truth_value(node)
                     # print(str(node.fml), node.truth_value)
                     if str(node.fml) not in field_names:
                         field_names.append(str(node.fml))
                         if hasattr(self, "truth_value_symbols"):
-                            truth_value = self.truth_value_symbols.get(
+                            truth_value = getattr(self, "truth_value_symbols").get(
                                 node.truth_value, node.truth_value
                             )
                         else:
                             truth_value = node.truth_value
-                        row.append(truth_value)
+                        if isinstance(node.fml, forms.Atom):
+                            atom_value_pairs.append((node.fml, truth_value))
+                        else:
+                            nonatom_value_pairs.append((node.fml, truth_value))
+                        # row.append(truth_value)
+
+                # print(atom_value_pairs, nonatom_value_pairs)
+                field_names = [str(fml) for fml, value in nonatom_value_pairs]
+                row = [value for fml, value in nonatom_value_pairs]
                 # print(field_names, row)
-                if not table.field_names:
-                    table.field_names = field_names
-                table.add_row(row)
+
+                formula_row_segments.append(nonatom_value_pairs)
+
+            # print(assignments)
+            # print(formula_row_segments)
+
+            field_names = []
+            row = []
+
+            for atom, value in assignments.items():
+                truth_value = getattr(self, "truth_value_symbols", {}).get(value, value)
+                field_names.append(str(atom))
+                row.append(truth_value)
+
+            i = 0
+            for nonatom_value_pairs in formula_row_segments:
+                # TODO: Fix hacky way to satisfy PrettyTable's unique field_names requirement
+                field_names += [
+                    str(fml) + " " * i for fml, value in nonatom_value_pairs
+                ]
+                row += [value for fml, value in nonatom_value_pairs]
+                i += 1
+
+            if not table.field_names:
+                # Create field_names from fml of each nonatom_value_pairs of formula_row_segments
+                table.field_names = field_names
+
+            table.add_row(row)
+
         return table
 
     def to_string(self, style=PLAIN_COLUMNS):
