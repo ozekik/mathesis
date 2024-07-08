@@ -68,10 +68,14 @@ $$
 $$
 \begin{prooftree}
 \AxiomC{$A \Rightarrow A$}
-\UnaryInfC{$A \Rightarrow B, A$}
-\AxiomC{$B \Rightarrow B$}
-\UnaryInfC{$B \Rightarrow B, A$}
-\BinaryInfC{$A \lor B \Rightarrow B, A$}
+\RightLabel{wR}
+\UnaryInfC{$A \Rightarrow A, B$}
+\AxiomC{$B \Rightarrow A$}
+\RightLabel{wR}
+\UnaryInfC{$B \Rightarrow A, B$}
+\RightLabel{$\lor$L}
+\BinaryInfC{$A \lor B \Rightarrow A, B$}
+\RightLabel{$\neg$L}
 \UnaryInfC{$\neg A, A \lor B \Rightarrow B$}
 \end{prooftree}
 $$

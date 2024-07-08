@@ -64,11 +64,15 @@ print(deriv.latex())
 $$
 \begin{prooftree}
 \AxiomC{$A$}
+\RightLabel{$\lor$I}
 \UnaryInfC{$A \lor C$}
 \AxiomC{$B$}
+\RightLabel{$\to$E}
 \AxiomC{$B \to C$}
 \BinaryInfC{$C$}
+\RightLabel{$\lor$I}
 \UnaryInfC{$A \lor C$}
+\RightLabel{$\lor$E}
 \AxiomC{$A \lor B$}
 \TrinaryInfC{$A \lor C$}
 \end{prooftree}
