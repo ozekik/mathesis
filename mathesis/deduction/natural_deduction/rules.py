@@ -60,6 +60,7 @@ class EFQ(Rule):
         # TODO: Fix this
         assert str(target.fml) == "⊥", "Not an atom"
 
+        target.sequent.derived_by = self
         target.subproof.derived_by = self
 
         item = SequentItem(
@@ -100,7 +101,9 @@ class Negation:
             subfml = target.fml.sub
 
             if target.sequent:
-                target.subproof.derived_by = self
+                target.sequent.derived_by = self
+
+            target.subproof.derived_by = self
 
             # TODO: Fix this
             falsum = forms.Atom("⊥")
@@ -141,6 +144,7 @@ class Negation:
             assert target.sign == sign.POSITIVE, "Cannot apply elimination rule"
             assert isinstance(target.fml, forms.Negation), "Not a negation"
 
+            target.sequent.derived_by = self
             target.subproof.derived_by = self
 
             subfml = target.fml.sub
@@ -191,6 +195,7 @@ class Conjunction:
             assert target.sign == sign.NEGATIVE, "Cannot apply introduction rule"
             assert isinstance(target.fml, forms.Conjunction), "Not a conjunction"
 
+            target.sequent.derived_by = self
             target.subproof.derived_by = self
 
             branches = []
@@ -242,6 +247,7 @@ class Conjunction:
             assert target.sign == sign.POSITIVE, "Cannot apply elimination rule"
             assert isinstance(target.fml, forms.Conjunction), "Not a conjunction"
 
+            target.sequent.derived_by = self
             target.subproof.derived_by = self
 
             conj1, conj2 = target.fml.subs
@@ -279,6 +285,7 @@ class Disjunction:
             assert target.sign == sign.NEGATIVE, "Sign is not negative"
             assert isinstance(target.fml, forms.Disjunction), "Not a disjunction"
 
+            target.sequent.derived_by = self
             target.subproof.derived_by = self
 
             disj1, disj2 = target.fml.subs
@@ -322,6 +329,7 @@ class Disjunction:
             assert target.sign == sign.POSITIVE, "Cannot apply elimination rule"
             assert isinstance(target.fml, forms.Disjunction), "Not a disjunction"
 
+            target.sequent.derived_by = self
             target.subproof.derived_by = self
 
             branches = []
@@ -363,6 +371,7 @@ class Conditional:
             assert target.sign == sign.NEGATIVE, "Cannot apply introduction rule"
             assert isinstance(target.fml, forms.Conditional), "Not a conditional"
 
+            target.sequent.derived_by = self
             target.subproof.derived_by = self
 
             antec, conseq = target.fml.subs
@@ -403,6 +412,7 @@ class Conditional:
             assert target.sign == sign.POSITIVE, "Cannot apply elimination rule"
             assert isinstance(target.fml, forms.Conditional), "Not a conditional"
 
+            target.sequent.derived_by = self
             target.subproof.derived_by = self
 
             antec, conseq = target.fml.subs
