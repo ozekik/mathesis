@@ -5,7 +5,14 @@ from mathesis.deduction.sequent_calculus.sequent import Sequent, SequentItem, si
 
 
 class Rule:
-    pass
+    label: str
+    latex_label: str
+
+    def __str__(self):
+        return self.label
+
+    def latex(self):
+        return self.latex_label
 
 
 class StructuralRule(Rule):
@@ -30,11 +37,8 @@ def _apply(target, new_items, counter):
 class Negation:
     # Left = signed_rules.PositiveNegationRule
     class Left(Rule):
-        def __str__(self):
-            return "¬L"  # TODO: Make this customizable
-
-        def latex(self):
-            return r"$\neg$L"
+        label = "¬L"
+        latex_label = r"$\neg$L"
 
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.POSITIVE, "Not on the left side of sequent"
@@ -53,11 +57,8 @@ class Negation:
 
     # Right = signed_rules.NegativeNegationRule
     class Right(Rule):
-        def __str__(self):
-            return "¬R"  # TODO: Make this customizable
-
-        def latex(self):
-            return r"$\neg$R"
+        label = "¬R"
+        latex_label = r"$\neg$R"
 
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.NEGATIVE, "Not on the right side of sequent"
@@ -78,11 +79,8 @@ class Negation:
 class Conjunction:
     # Left = signed_rules.PositiveConjunctionRule
     class Left(Rule):
-        def __str__(self):
-            return "∧L"  # TODO: Make this customizable
-
-        def latex(self):
-            return r"$\land$L"
+        label = "∧L"
+        latex_label = r"$\land$L"
 
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.POSITIVE, "Not on the left side of sequent"
@@ -102,11 +100,8 @@ class Conjunction:
 
     # Right = signed_rules.NegativeConjunctionRule
     class Right(Rule):
-        def __str__(self):
-            return "∧R"  # TODO: Make this customizable
-
-        def latex(self):
-            return r"$\land$R"
+        label = "∧R"
+        latex_label = r"$\land$R"
 
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.NEGATIVE, "Not on the right side of sequent"
@@ -130,11 +125,8 @@ class Conjunction:
 class Disjunction:
     # Left = signed_rules.PositiveDisjunctionRule
     class Left(Rule):
-        def __str__(self):
-            return "∨L"  # TODO: Make this customizable
-
-        def latex(self):
-            return r"$\lor$L"
+        label = "∨L"
+        latex_label = r"$\lor$L"
 
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.POSITIVE, "Not on the left side of sequent"
@@ -156,11 +148,8 @@ class Disjunction:
 
     # Right = signed_rules.NegativeDisjunctionRule
     class Right(Rule):
-        def __str__(self):
-            return "∨R"  # TODO: Make this customizable
-
-        def latex(self):
-            return r"$\lor$R"
+        label = "∨R"
+        latex_label = r"$\lor$R"
 
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.NEGATIVE, "Not on the right side of sequent"
@@ -182,11 +171,8 @@ class Disjunction:
 class Conditional:
     # Left = signed_rules.PositiveConditionalRule
     class Left(Rule):
-        def __str__(self):
-            return "→L"  # TODO: Make this customizable
-
-        def latex(self):
-            return r"$\to$L"
+        label = "→L"
+        latex_label = r"$\to$L"
 
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.POSITIVE, "Not on the left side of sequent"
@@ -207,11 +193,8 @@ class Conditional:
 
     # Right = signed_rules.NegativeConditionalRule
     class Right(Rule):
-        def __str__(self):
-            return "→R"  # TODO: Make this customizable
-
-        def latex(self):
-            return r"$\to$R"
+        label = "→R"
+        latex_label = r"$\to$R"
 
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.NEGATIVE, "Not on the right side of sequent"
@@ -232,11 +215,8 @@ class Conditional:
 
 class Weakening:
     class Left(StructuralRule):
-        def __str__(self):
-            return "wL"  # TODO: Make this customizable
-
-        def latex(self):
-            return r"wL"
+        label = "wL"
+        latex_label = r"$wL"
 
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.POSITIVE, "Not on the left side of sequent"
@@ -251,11 +231,8 @@ class Weakening:
             }
 
     class Right(StructuralRule):
-        def __str__(self):
-            return "wR"  # TODO: Make this customizable
-
-        def latex(self):
-            return r"wR"
+        label = "wR"
+        latex_label = r"$wR"
 
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.NEGATIVE, "Not on the right side of sequent"

@@ -96,11 +96,11 @@ class Sequent(NodeMixin):
         return str(self)
 
     @property
-    def left(self):
+    def left(self) -> list[SequentItem]:
         return [item for item in self.items if item.sign == sign.POSITIVE]
 
     @property
-    def right(self):
+    def right(self) -> list[SequentItem]:
         return [item for item in self.items if item.sign == sign.NEGATIVE]
 
     # @property
