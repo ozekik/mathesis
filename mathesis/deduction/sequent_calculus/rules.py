@@ -1,7 +1,7 @@
 from itertools import count
 
 from mathesis import forms
-from mathesis.deduction.sequent_calculus.sequents import Sequent, SequentItem, sign
+from mathesis.deduction.sequent_calculus.sequent import Sequent, SequentItem, sign
 
 
 class Rule:
@@ -30,9 +30,17 @@ def _apply(target, new_items, counter):
 class Negation:
     # Left = signed_rules.PositiveNegationRule
     class Left(Rule):
+        def __str__(self):
+            return "¬L"  # TODO: Make this customizable
+
+        def latex(self):
+            return r"$\neg$L"
+
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.POSITIVE, "Not on the left side of sequent"
             assert isinstance(target.fml, forms.Negation), "Not a negation"
+
+            target.sequent.derived_by = self
 
             subfml = target.fml.sub
             new_item = SequentItem(subfml.clone(), sign.NEGATIVE, n=next(counter))
@@ -45,9 +53,17 @@ class Negation:
 
     # Right = signed_rules.NegativeNegationRule
     class Right(Rule):
+        def __str__(self):
+            return "¬R"  # TODO: Make this customizable
+
+        def latex(self):
+            return r"$\neg$R"
+
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.NEGATIVE, "Not on the right side of sequent"
             assert isinstance(target.fml, forms.Negation), "Not a negation"
+
+            target.sequent.derived_by = self
 
             subfml = target.fml.sub
             new_item = SequentItem(subfml.clone(), sign.POSITIVE, n=next(counter))
@@ -62,9 +78,17 @@ class Negation:
 class Conjunction:
     # Left = signed_rules.PositiveConjunctionRule
     class Left(Rule):
+        def __str__(self):
+            return "∧L"  # TODO: Make this customizable
+
+        def latex(self):
+            return r"$\land$L"
+
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.POSITIVE, "Not on the left side of sequent"
             assert isinstance(target.fml, forms.Conjunction), "Not a conjunction"
+
+            target.sequent.derived_by = self
 
             conj1, conj2 = target.fml.subs
             conj1 = SequentItem(conj1.clone(), sign.POSITIVE, n=next(counter))
@@ -78,9 +102,17 @@ class Conjunction:
 
     # Right = signed_rules.NegativeConjunctionRule
     class Right(Rule):
+        def __str__(self):
+            return "∧R"  # TODO: Make this customizable
+
+        def latex(self):
+            return r"$\land$R"
+
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.NEGATIVE, "Not on the right side of sequent"
             assert isinstance(target.fml, forms.Conjunction), "Not a conjunction"
+
+            target.sequent.derived_by = self
 
             branches = []
 
@@ -98,9 +130,17 @@ class Conjunction:
 class Disjunction:
     # Left = signed_rules.PositiveDisjunctionRule
     class Left(Rule):
+        def __str__(self):
+            return "∨L"  # TODO: Make this customizable
+
+        def latex(self):
+            return r"$\lor$L"
+
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.POSITIVE, "Not on the left side of sequent"
             assert isinstance(target.fml, forms.Disjunction), "Not a disjunction"
+
+            target.sequent.derived_by = self
 
             branches = []
 
@@ -116,9 +156,17 @@ class Disjunction:
 
     # Right = signed_rules.NegativeDisjunctionRule
     class Right(Rule):
+        def __str__(self):
+            return "∨R"  # TODO: Make this customizable
+
+        def latex(self):
+            return r"$\lor$R"
+
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.NEGATIVE, "Not on the right side of sequent"
             assert isinstance(target.fml, forms.Disjunction), "Not a disjunction"
+
+            target.sequent.derived_by = self
 
             disj1, disj2 = target.fml.subs
             disj1 = SequentItem(disj1.clone(), sign.NEGATIVE, n=next(counter))
@@ -134,9 +182,17 @@ class Disjunction:
 class Conditional:
     # Left = signed_rules.PositiveConditionalRule
     class Left(Rule):
+        def __str__(self):
+            return "→L"  # TODO: Make this customizable
+
+        def latex(self):
+            return r"$\to$L"
+
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.POSITIVE, "Not on the left side of sequent"
             assert isinstance(target.fml, forms.Conditional), "Not a conditional"
+
+            target.sequent.derived_by = self
 
             antec, conseq = target.fml.subs
             antec = SequentItem(antec.clone(), sign.NEGATIVE, n=next(counter))
@@ -151,9 +207,17 @@ class Conditional:
 
     # Right = signed_rules.NegativeConditionalRule
     class Right(Rule):
+        def __str__(self):
+            return "→R"  # TODO: Make this customizable
+
+        def latex(self):
+            return r"$\to$R"
+
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.NEGATIVE, "Not on the right side of sequent"
             assert isinstance(target.fml, forms.Conditional), "Not a conditional"
+
+            target.sequent.derived_by = self
 
             antec, conseq = target.fml.subs
             antec = SequentItem(antec.clone(), sign.POSITIVE, n=next(counter))
@@ -168,8 +232,16 @@ class Conditional:
 
 class Weakening:
     class Left(StructuralRule):
+        def __str__(self):
+            return "wL"  # TODO: Make this customizable
+
+        def latex(self):
+            return r"wL"
+
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.POSITIVE, "Not on the left side of sequent"
+
+            target.sequent.derived_by = self
 
             branch_sequent = _apply(target, [], counter)
 
@@ -179,8 +251,16 @@ class Weakening:
             }
 
     class Right(StructuralRule):
+        def __str__(self):
+            return "wR"  # TODO: Make this customizable
+
+        def latex(self):
+            return r"wR"
+
         def apply(self, target, counter=count(1)):
             assert target.sign == sign.NEGATIVE, "Not on the right side of sequent"
+
+            target.sequent.derived_by = self
 
             branch_sequent = _apply(target, [], counter)
 

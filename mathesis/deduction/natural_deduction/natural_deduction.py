@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import namedtuple
+from itertools import count
 
 from anytree import Node, PostOrderIter, RenderTree
 
@@ -9,6 +10,12 @@ from mathesis.forms import Formula
 
 
 class NDTree:
+    """A natural deduction proof tree."""
+
+    _sequent_tree: SequentTree
+    bookkeeper: dict[int, Node]
+    counter: count[int]
+
     def __init__(self, premises: list[Formula], conclusion: Formula):
         assert isinstance(conclusion, Formula), "Conclusion must be a single formula"
         self._sequent_tree = SequentTree(premises, [conclusion])
