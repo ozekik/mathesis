@@ -1,12 +1,11 @@
-from copy import copy, deepcopy
+from copy import deepcopy
 from itertools import count
 from typing import Literal
 
-from anytree import Node
-
 from mathesis import forms
-from mathesis.deduction.sequent_calculus import Sequent, SequentItem, rules
-from mathesis.deduction.tableau import sign, signed_rules
+from mathesis.deduction.natural_deduction.natural_deduction import NDSubproof
+from mathesis.deduction.sequent_calculus import Sequent, SequentItem
+from mathesis.deduction.tableau import sign
 
 
 def _apply(target, new_items, counter, preserve_target=True):
@@ -31,7 +30,14 @@ def _apply(target, new_items, counter, preserve_target=True):
 
 
 class Rule:
-    pass
+    label: str
+    latex_label: str
+
+    def __str__(self):
+        return self.label
+
+    def latex(self):
+        return self.latex_label
 
 
 class IntroductionRule(Rule):
@@ -43,13 +49,19 @@ class EliminationRule(Rule):
 
 
 class EFQ(Rule):
-    def __init__(self, intro: Node):
+    label = "EFQ"
+    latex_label = "EFQ"
+
+    def __init__(self, intro: SequentItem):
         self.intro = intro
 
-    def apply(self, target, counter=count(1)):
+    def apply(self, target: SequentItem, counter=count(1)):
         assert target.sign == sign.POSITIVE, "Invalid application"
         # TODO: Fix this
         assert str(target.fml) == "⊥", "Not an atom"
+
+        target.subproof.derived_by = self
+
         item = SequentItem(
             self.intro.fml,
             sign=sign.POSITIVE,
@@ -58,7 +70,7 @@ class EFQ(Rule):
         sq, _target = _apply(target, [item], counter)
 
         # Subproof
-        item.subproof = Node(
+        item.subproof = NDSubproof(
             item,
             parent=target.sequent.right[0].subproof,
             children=[target.subproof],
@@ -79,10 +91,16 @@ class EFQ(Rule):
 class Negation:
     # Intro = signed_rules.NegativeNegationRule
     class Intro(IntroductionRule):
-        def apply(self, target, counter=count(1)):
+        label = "¬I"
+        latex_label = r"$\neg$I"
+
+        def apply(self, target: SequentItem, counter=count(1)):
             assert target.sign == sign.NEGATIVE, "Cannot apply introduction rule"
             assert isinstance(target.fml, forms.Negation), "Not a negation"
             subfml = target.fml.sub
+
+            if target.sequent:
+                target.subproof.derived_by = self
 
             # TODO: Fix this
             falsum = forms.Atom("⊥")
@@ -96,12 +114,12 @@ class Negation:
             sq = _apply(target, [antec, conseq], counter, preserve_target=False)
 
             # Subproof
-            conseq.subproof = Node(
+            conseq.subproof = NDSubproof(
                 conseq,
                 children=[deepcopy(node.subproof) for node in target.sequent.left],
             )
             target.sequent.right[0].subproof.children = [conseq.subproof]
-            antec.subproof = Node(
+            antec.subproof = NDSubproof(
                 antec,
                 parent=conseq.subproof,
                 children=[],
@@ -113,12 +131,18 @@ class Negation:
             }
 
     class Elim(EliminationRule):
+        label = "¬E"
+        latex_label = r"$\neg$E"
+
         def __init__(self):
             pass
 
-        def apply(self, target, counter=count(1)):
+        def apply(self, target: SequentItem, counter=count(1)):
             assert target.sign == sign.POSITIVE, "Cannot apply elimination rule"
             assert isinstance(target.fml, forms.Negation), "Not a negation"
+
+            target.subproof.derived_by = self
+
             subfml = target.fml.sub
 
             # TODO: Better way to check conditions
@@ -135,7 +159,7 @@ class Negation:
             sequent, target = _apply(target, [item], counter)
 
             # Subproof
-            item.subproof = Node(
+            item.subproof = NDSubproof(
                 item,
                 children=[
                     deepcopy(subfml.subproof),
@@ -157,12 +181,17 @@ class Conjunction:
     #     pass
 
     class Intro(IntroductionRule):
+        label = "∧I"
+        latex_label = r"$\land$I"
+
         def __init__(self):
             pass
 
-        def apply(self, target, counter=count(1)):
+        def apply(self, target: SequentItem, counter=count(1)):
             assert target.sign == sign.NEGATIVE, "Cannot apply introduction rule"
             assert isinstance(target.fml, forms.Conjunction), "Not a conjunction"
+
+            target.subproof.derived_by = self
 
             branches = []
 
@@ -175,9 +204,9 @@ class Conjunction:
             for branch in branches:
                 for item in branch.left:
                     if getattr(item, "subproof", None) is None:
-                        item.subproof = Node(item)
+                        item.subproof = NDSubproof(item)
 
-                branch.right[0].subproof = Node(branch.right[0])
+                branch.right[0].subproof = NDSubproof(branch.right[0])
                 branch.right[0].subproof.children = [
                     deepcopy(item.subproof) for item in branch.left
                 ]
@@ -203,12 +232,17 @@ class Conjunction:
     # TODO: Choice of conjunct
     # Elim = signed_rules.PositiveConjunctionRule
     class Elim(EliminationRule):
+        label = "∧E"
+        latex_label = r"$\land$E"
+
         def __init__(self, conjunct: Literal["left", "right"]):
             self.conjunct = conjunct
 
-        def apply(self, target, counter=count(1)):
+        def apply(self, target: SequentItem, counter=count(1)):
             assert target.sign == sign.POSITIVE, "Cannot apply elimination rule"
             assert isinstance(target.fml, forms.Conjunction), "Not a conjunction"
+
+            target.subproof.derived_by = self
 
             conj1, conj2 = target.fml.subs
             if self.conjunct == "left":
@@ -220,7 +254,7 @@ class Conjunction:
             # sq2 = Sequent([target], [item], parent=target.sequent)
 
             # Subproof
-            item.subproof = Node(
+            item.subproof = NDSubproof(
                 item,
                 children=[target.subproof],
                 parent=target.sequent.right[0].subproof,
@@ -235,12 +269,18 @@ class Conjunction:
 class Disjunction:
     # Intro = signed_rules.NegativeDisjunctionRule
     class Intro(IntroductionRule):
+        label = "∨I"
+        latex_label = r"$\lor$I"
+
         def __init__(self, disjunct: Literal["left", "right"]):
             self.disjunct = disjunct
 
-        def apply(self, target, counter=count(1)):
+        def apply(self, target: SequentItem, counter=count(1)):
             assert target.sign == sign.NEGATIVE, "Sign is not negative"
             assert isinstance(target.fml, forms.Disjunction), "Not a disjunction"
+
+            target.subproof.derived_by = self
+
             disj1, disj2 = target.fml.subs
 
             if self.disjunct == "left":
@@ -251,7 +291,7 @@ class Disjunction:
             sq = _apply(target, [item], counter, preserve_target=False)
 
             # Subproof
-            item.subproof = Node(
+            item.subproof = NDSubproof(
                 item,
                 children=[deepcopy(item.subproof) for item in sq.left],
             )
@@ -272,12 +312,17 @@ class Disjunction:
 
     # Elim = signed_rules.PositiveDisjunctionRule
     class Elim(EliminationRule):
+        label = "∨E"
+        latex_label = r"$\lor$E"
+
         def __init__(self):
             pass
 
-        def apply(self, target, counter=count(1)):
+        def apply(self, target: SequentItem, counter=count(1)):
             assert target.sign == sign.POSITIVE, "Cannot apply elimination rule"
             assert isinstance(target.fml, forms.Disjunction), "Not a disjunction"
+
+            target.subproof.derived_by = self
 
             branches = []
 
@@ -290,9 +335,9 @@ class Disjunction:
             for branch in branches:
                 for item in branch.left:
                     if getattr(item, "subproof", None) is None:
-                        item.subproof = Node(item)
+                        item.subproof = NDSubproof(item)
 
-                branch.right[0].subproof = Node(branch.right[0])
+                branch.right[0].subproof = NDSubproof(branch.right[0])
                 branch.right[0].subproof.children = [
                     deepcopy(item.subproof) for item in branch.left
                 ]
@@ -311,9 +356,15 @@ class Conditional:
     # class Intro(signed_rules.NegativeConditionalRule, IntroductionRule):
     #     pass
     class Intro(IntroductionRule):
-        def apply(self, target, counter=count(1)):
+        label = "→I"
+        latex_label = r"$\to$I"
+
+        def apply(self, target: SequentItem, counter=count(1)):
             assert target.sign == sign.NEGATIVE, "Cannot apply introduction rule"
             assert isinstance(target.fml, forms.Conditional), "Not a conditional"
+
+            target.subproof.derived_by = self
+
             antec, conseq = target.fml.subs
 
             antec = SequentItem(antec, sign=sign.POSITIVE, n=next(counter))
@@ -325,12 +376,12 @@ class Conditional:
             sq = _apply(target, [antec, conseq], counter, preserve_target=False)
 
             # Subproof
-            conseq.subproof = Node(
+            conseq.subproof = NDSubproof(
                 conseq,
                 children=[deepcopy(node.subproof) for node in target.sequent.left],
             )
             target.sequent.right[0].subproof.children = [conseq.subproof]
-            antec.subproof = Node(
+            antec.subproof = NDSubproof(
                 antec,
                 parent=conseq.subproof,
                 children=[],
@@ -342,12 +393,18 @@ class Conditional:
             }
 
     class Elim(EliminationRule):
+        label = "→E"
+        latex_label = r"$\to$E"
+
         def __init__(self):
             pass
 
-        def apply(self, target, counter=count(1)):
+        def apply(self, target: SequentItem, counter=count(1)):
             assert target.sign == sign.POSITIVE, "Cannot apply elimination rule"
             assert isinstance(target.fml, forms.Conditional), "Not a conditional"
+
+            target.subproof.derived_by = self
+
             antec, conseq = target.fml.subs
 
             # TODO: Better way to check conditions
@@ -365,7 +422,7 @@ class Conditional:
             sequent, _target = _apply(target, [conseq], counter)
 
             # Subproof
-            conseq.subproof = Node(
+            conseq.subproof = NDSubproof(
                 conseq,
                 children=[
                     deepcopy(antec.subproof),

@@ -1,19 +1,33 @@
 from __future__ import annotations
 
-from collections import namedtuple
 from itertools import count
 
-from anytree import Node, PostOrderIter, RenderTree
+from anytree import NodeMixin, PostOrderIter, RenderTree
 
+from mathesis.deduction import natural_deduction
 from mathesis.deduction.sequent_calculus import SequentTree
+from mathesis.deduction.sequent_calculus.sequent import SequentItem
 from mathesis.forms import Formula
+
+
+class NDSubproof(NodeMixin):
+    derived_by: natural_deduction.rules.Rule | None
+
+    def __init__(self, item: SequentItem, *, parent=None, children=[]) -> None:
+        super().__init__()
+        self.name = item
+        self.item = item
+        self.parent = parent
+        self.children = children
+
+        self.derived_by = None
 
 
 class NDTree:
     """A natural deduction proof tree."""
 
     _sequent_tree: SequentTree
-    bookkeeper: dict[int, Node]
+    bookkeeper: dict[int, SequentItem]
     counter: count[int]
 
     def __init__(self, premises: list[Formula], conclusion: Formula):
@@ -24,8 +38,8 @@ class NDTree:
 
         # Proof tree
         for item in self._sequent_tree.root.left:
-            item.subproof = Node(item, children=[])
-        self._sequent_tree.root.right[0].subproof = Node(
+            item.subproof = NDSubproof(item, children=[])
+        self._sequent_tree.root.right[0].subproof = NDSubproof(
             self._sequent_tree.root.right[0],
             children=[item.subproof for item in self._sequent_tree.root.left],
         )
@@ -33,7 +47,7 @@ class NDTree:
     def __getitem__(self, index):
         return self.bookkeeper[index]
 
-    def apply(self, target: Node, rule):
+    def apply(self, target: SequentItem, rule):
         res = rule.apply(target, self.counter)
         queue_items = res["queue_items"]
 
@@ -66,6 +80,11 @@ class NDTree:
         output = ""
         root = self._sequent_tree.root.right[0].subproof
         for node in PostOrderIter(root):
+            if node.derived_by is not None and hasattr(node.derived_by, "latex"):
+                label_part = f"\\RightLabel{{{node.derived_by.latex()}}}\n"
+            else:
+                label_part = ""
+
             tmpl = ""
             if len(node.children) == 0:
                 tmpl = r"\AxiomC{{${}$}}"
@@ -75,5 +94,6 @@ class NDTree:
                 tmpl = r"\BinaryInfC{{${}$}}"
             elif len(node.children) == 3:
                 tmpl = r"\TrinaryInfC{{${}$}}"
-            output += tmpl.format(node.name.fml.latex()) + "\n"
+            output += label_part + tmpl.format(node.name.fml.latex()) + "\n"
+
         return """\\begin{{prooftree}}\n{}\\end{{prooftree}}""".format(output)
