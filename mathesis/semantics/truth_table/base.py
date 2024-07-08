@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from itertools import product
 
-from anytree import NodeMixin, PostOrderIter, RenderTree
+from anytree import NodeMixin, PostOrderIter
 from prettytable import PLAIN_COLUMNS, PrettyTable
 
 from mathesis import forms
@@ -20,13 +20,13 @@ class ConnectiveClause:
     def __init__(self, truth_value_symbols=None) -> None:
         self.truth_value_symbols = truth_value_symbols
 
+    def __str__(self):
+        return self.to_string()
+
     def apply(self, *values):
         if None in values:
             return None
         return self.table[values]
-
-    def __str__(self):
-        return self.to_string()
 
     def to_table(self):
         table = PrettyTable()
@@ -122,6 +122,108 @@ class TruthTable:
 
     def __str__(self):
         return self.to_string()
+
+    @property
+    def atom_columns(self):
+        atom_symbols = self.atom_symbols
+        return atom_symbols
+
+    @property
+    def atom_symbols(self):
+        atom_symbols = set()
+        # Extract all atomic symbols in the formulas
+        for fml in self.premises + self.conclusions:
+            atom_symbols.update(fml.atoms.keys())
+        atom_symbols = sorted(tuple(atom_symbols))
+        return atom_symbols
+
+    def assignments(self):
+        """Generate all possible truth assignments for the atomic symbols in the formulas."""
+
+        atom_symbols = self.atom_symbols
+
+        assignments = []
+        for tv in product(self.truth_values, repeat=len(atom_symbols)):
+            assignment = dict(zip(atom_symbols, tv))
+            assignments.append(assignment)
+
+        return assignments
+
+    @property
+    def columns(self):
+        atom_columns = [self.atom_columns]
+        nonatom_columns = []
+
+        for fml in self.premises + self.conclusions:
+            tree = self._wrap_fml(fml)
+            fml_columns = []
+
+            for node in PostOrderIter(tree):
+                if str(node.fml) not in map(str, fml_columns):
+                    if isinstance(node.fml, forms.Atom):
+                        pass
+                    else:
+                        fml_columns.append(node.fml)
+
+            nonatom_columns.append(fml_columns)
+
+        columns = atom_columns + nonatom_columns
+
+        # TODO: Allow flexible stringification
+        return [tuple(map(str, column)) for column in columns]
+
+    @property
+    def rows(self):
+        rows = []
+
+        for assignment in self.assignments():
+            row = []
+            atom_tvs = [value for value in assignment.values()]
+            atom_segment = []
+            for value in atom_tvs:
+                if hasattr(self, "truth_value_symbols"):
+                    atom_segment.append(
+                        getattr(self, "truth_value_symbols").get(value, value)
+                    )
+                else:
+                    atom_segment.append(value)
+
+            row.append(tuple(atom_segment))
+
+            for fml in self.premises + self.conclusions:
+                tree = self._wrap_fml(fml)
+                tree.assign_atom_values(assignment)
+                atom_value_pairs = []
+                nonatom_value_pairs = []
+                field_names = []
+
+                for node in PostOrderIter(tree):
+                    self.compute_truth_value(node)
+                    # print(str(node.fml), node.truth_value)
+                    if str(node.fml) not in field_names:
+                        field_names.append(str(node.fml))
+                        if hasattr(self, "truth_value_symbols"):
+                            truth_value = getattr(self, "truth_value_symbols").get(
+                                node.truth_value, node.truth_value
+                            )
+                        else:
+                            truth_value = node.truth_value
+                        if isinstance(node.fml, forms.Atom):
+                            atom_value_pairs.append((node.fml, truth_value))
+                        else:
+                            nonatom_value_pairs.append((node.fml, truth_value))
+                        # row.append(truth_value)
+
+                # print(atom_value_pairs, nonatom_value_pairs)
+                # field_names = [str(fml) for fml, value in atom_value_pairs + nonatom_value_pairs]
+                row_segment = tuple(value for fml, value in nonatom_value_pairs)
+                row.append(row_segment)
+
+            rows.append(row)
+
+        return rows
+
+        # formula_row_segments.append(nonatom_value_pairs)
 
     def compute_truth_value(self, assigned_node):
         if isinstance(assigned_node.fml, forms.Atom):
@@ -234,19 +336,12 @@ class TruthTable:
         table.align = "c"
         table.format = True
 
-        atom_symbols = set()
-        # Extract all atomic symbols in the formulas
-        for fml in self.premises + self.conclusions:
-            atom_symbols.update(fml.atoms.keys())
-        atom_symbols = sorted(list(atom_symbols))
-
-        for tv in product(self.truth_values, repeat=len(atom_symbols)):
-            assignments = dict(zip(atom_symbols, tv))
+        for assignment in self.assignments():
             formula_row_segments = []
             for fml in self.premises + self.conclusions:
                 tree = self._wrap_fml(fml)
                 # print(RenderTree(tree))
-                tree.assign_atom_values(assignments)
+                tree.assign_atom_values(assignment)
                 # print(tree.truth_value)
                 # print(RenderTree(tree))
                 atom_value_pairs = []
@@ -278,13 +373,13 @@ class TruthTable:
 
                 formula_row_segments.append(nonatom_value_pairs)
 
-            # print(assignments)
+            # print(assignment)
             # print(formula_row_segments)
 
             field_names = []
             row = []
 
-            for atom, value in assignments.items():
+            for atom, value in assignment.items():
                 truth_value = getattr(self, "truth_value_symbols", {}).get(value, value)
                 field_names.append(str(atom))
                 row.append(truth_value)
