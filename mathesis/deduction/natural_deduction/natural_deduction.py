@@ -102,3 +102,28 @@ class NDTree:
             output += label_part + tmpl.format(node.name.fml.latex()) + "\n"
 
         return """\\begin{{prooftree}}\n{}\\end{{prooftree}}""".format(output)
+
+    def _typst(self, number=False, arrow=r"\Rightarrow"):
+        output = ""
+        root = self._sequent_tree.root.right[0].subproof
+
+        def rec(node):
+            if node.derived_by is not None:
+                label_part = f"\nname: [{node.derived_by}],\n"
+            else:
+                label_part = "\n" if not len(node.children) == 0 else ""
+
+            if len(node.children) == 0:
+                return f"${node.name.fml}$,{label_part}"
+            elif len(node.children) == 1:
+                return f"rule({label_part}${node.name.fml}$,\n{rec(node.children[0])})"
+            elif len(node.children) == 2:
+                return f"rule({label_part}${node.name.fml}$,\n{rec(node.children[0])}\n{rec(node.children[1])})"
+            elif len(node.children) == 3:
+                return f"rule({label_part}${node.name.fml}$,\n{rec(node.children[0])},\n{rec(node.children[1])},\n{rec(node.children[2])})"
+
+        rec_output = rec(root)
+
+        output = f"#proof-tree(\n{rec_output}\n)"
+
+        return output
