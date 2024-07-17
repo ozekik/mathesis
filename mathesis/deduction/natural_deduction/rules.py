@@ -106,7 +106,7 @@ class Negation:
             target.subproof.derived_by = self
 
             # TODO: Fix this
-            falsum = forms.Atom("⊥")
+            falsum = forms.Atom("⊥", latex=r"\bot")
 
             antec = SequentItem(subfml, sign=sign.POSITIVE, n=next(counter))
             conseq = SequentItem(
@@ -116,7 +116,7 @@ class Negation:
             )
             sq = _apply(target, [antec, conseq], counter, preserve_target=False)
 
-            # Subproof
+            # Attach a subproof to the consequent (falsum)
             conseq.subproof = NDSubproof(
                 conseq,
                 children=[deepcopy(node.subproof) for node in target.sequent.left],
@@ -147,31 +147,39 @@ class Negation:
             target.sequent.derived_by = self
             target.subproof.derived_by = self
 
-            subfml = target.fml.sub
-
-            # TODO: Better way to check conditions
-            # premises = list(map(lambda x: str(x.fml), target.sequent.left))
-            # assert str(subfml) in premises, f"`{str(subfml)}` must be in premises"
-            subfml = next(
-                filter(lambda x: str(x.fml) == str(subfml), target.sequent.left),
+            # NOTE: Negation elimination requires a falsum in right
+            falsum = next(
+                filter(lambda x: str(x.fml) == "⊥", target.sequent.right),
                 None,
             )
-            assert subfml, f"`{str(subfml)}` must be in premises"
+            assert falsum, "`⊥` must be in conclusions"
 
-            falsum = forms.Atom("⊥")
-            item = SequentItem(falsum, sign=sign.POSITIVE, n=next(counter))
-            sequent, target = _apply(target, [item], counter)
+            # NOTE: If you want to eliminate negation, you need to have its subformula
+            subfml = target.fml.sub
 
-            # Subproof
-            item.subproof = NDSubproof(
-                item,
-                children=[
-                    deepcopy(subfml.subproof),
-                    deepcopy(target.subproof),
-                ],
-                parent=target.sequent.right[0].subproof,
+            subfml = SequentItem(subfml, sign=sign.NEGATIVE, n=next(counter))
+            sequent = _apply(target, [subfml], counter, preserve_target=False)
+
+            subfml = sequent.right[0]
+            subfml.subproof = NDSubproof(subfml)
+
+            # Look up falsum
+            falsum = next(
+                filter(lambda x: str(x.fml) == "⊥", target.sequent.right),
+                None,
             )
-            sequent.right[0].subproof = target.sequent.right[0].subproof
+
+            falsum.subproof.children = [
+                subfml.subproof,
+                target.subproof,
+            ]
+
+            new_falsum = next(
+                filter(lambda x: str(x.fml) == "⊥", sequent.right),
+                None,
+            )
+
+            new_falsum.subproof = falsum.subproof
 
             return {
                 "queue_items": [sequent],
@@ -294,6 +302,8 @@ class Disjunction:
                 item = SequentItem(disj1, sign=sign.NEGATIVE, n=next(counter))
             elif self.disjunct == "right":
                 item = SequentItem(disj2, sign=sign.NEGATIVE, n=next(counter))
+            else:
+                raise ValueError("Invalid disjunct")
 
             sq = _apply(target, [item], counter, preserve_target=False)
 
@@ -302,7 +312,7 @@ class Disjunction:
                 item,
                 children=[deepcopy(item.subproof) for item in sq.left],
             )
-            target.subproof.children = [item.subproof]
+            target.subproof.children = [deepcopy(item.subproof)]
             # sq.right[0].subproof = target.sequent.right[0].subproof
 
             if sq.tautology():
@@ -310,7 +320,7 @@ class Disjunction:
                     filter(lambda x: str(x.fml) == str(item.fml), sq.left),
                     None,
                 )
-                target.subproof.children = [left_item.subproof]
+                target.subproof.children = [deepcopy(left_item.subproof)]
 
             return {
                 "queue_items": [sq],
@@ -417,36 +427,31 @@ class Conditional:
 
             antec, conseq = target.fml.subs
 
-            # TODO: Better way to check conditions
-            antec = next(
-                filter(lambda x: str(x.fml) == str(antec), target.sequent.left),
-                None,
-            )
-            assert antec, "Antecendent does not match"
+            branches = []
 
-            # conclusion = str(target.sequent.right[0].fml)
-            # print(conclusion)
-            # assert str(conseq) == conclusion, "Consequent does not match"
+            antec = SequentItem(antec, sign=sign.NEGATIVE, n=next(counter))
+            antec.subproof = NDSubproof(antec)
+
+            sequent, target = _apply(target, [antec], counter)
+            branches.append(sequent)
 
             conseq = SequentItem(conseq, sign=sign.POSITIVE, n=next(counter))
-            sequent, _target = _apply(target, [conseq], counter)
+            sequent, target = _apply(target, [conseq], counter)
+            branches.append(sequent)
 
-            # Subproof
-            conseq.subproof = NDSubproof(
-                conseq,
-                children=[
-                    deepcopy(antec.subproof),
-                    deepcopy(target.subproof),
-                ],
-                parent=target.sequent.right[0].subproof,
-            )
-            # target.sequent.right[0].subproof = sequent.right[0].subproof
-            sequent.right[0].subproof = target.sequent.right[0].subproof
+            new_subproofs = []
 
-            if sequent.tautology():
-                target.sequent.right[0].subproof.children = conseq.subproof.children
+            new_subproof_antec = antec.subproof
+            new_subproof_conditional = target.subproof
+
+            new_subproofs = [
+                new_subproof_antec,
+                new_subproof_conditional,
+            ]
+
+            target.sequent.right[0].subproof.children = new_subproofs
 
             return {
-                "queue_items": [sequent],
+                "queue_items": branches,
                 "counter": counter,
             }

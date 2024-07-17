@@ -10,6 +10,11 @@ from mathesis.deduction.sequent_calculus.sequent import SequentItem
 from mathesis.forms import Formula
 
 
+class NDSequentItem(SequentItem):
+    subproof: NDSubproof
+    derived_by: natural_deduction.rules.Rule | None
+
+
 class NDSubproof(NodeMixin):
     derived_by: natural_deduction.rules.Rule | None
 
@@ -71,7 +76,6 @@ class NDTree:
                     f"[{node.name}]" if getattr(node, "marked", False) else node.name,
                     # self.proof_tree.mapping[node].n,
                     " ×" if getattr(node, "marked", False) else "",
-
                 )
             return output
         else:

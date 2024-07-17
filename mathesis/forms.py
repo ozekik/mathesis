@@ -13,7 +13,9 @@ class Formula:
 
 
 class Atom(Formula):
-    def __init__(self, constant_or_nonzero: str | list):
+    _latex: str | None
+
+    def __init__(self, constant_or_nonzero: str | list, symbol=None, latex=None):
         if isinstance(constant_or_nonzero, list):
             self.predicate, self.terms = (
                 str(constant_or_nonzero[0]),
@@ -23,6 +25,7 @@ class Atom(Formula):
             constant = constant_or_nonzero
             self.predicate = str(constant)
             self.terms = []
+        self._latex = latex
 
     @property
     def symbol(self) -> str:
@@ -52,7 +55,7 @@ class Atom(Formula):
         return clone
 
     def latex(self):
-        return f"{self.symbol}"
+        return f"{self._latex or self.symbol}"
 
     def __str__(self) -> str:
         return f"{self.symbol}"

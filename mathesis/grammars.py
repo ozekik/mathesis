@@ -14,11 +14,16 @@ from mathesis.forms import (
     Universal,
 )
 
+_latex_symbols = {
+    "⊥": r"\bot",
+    "⊤": r"\top",
+}
+
 
 class ToFml(Transformer):
     def atom(self, v):
         if len(v) == 1:
-            return Atom(*v)
+            return Atom(*v, latex=_latex_symbols.get(v[0], None))
         else:
             return Atom(v)
 
