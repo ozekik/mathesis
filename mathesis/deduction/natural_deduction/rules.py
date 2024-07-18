@@ -299,25 +299,25 @@ class Disjunction:
             disj1, disj2 = target.fml.subs
 
             if self.disjunct == "left":
-                item = SequentItem(disj1, sign=sign.NEGATIVE, n=next(counter))
+                disjunct_item = SequentItem(disj1, sign=sign.NEGATIVE, n=next(counter))
             elif self.disjunct == "right":
-                item = SequentItem(disj2, sign=sign.NEGATIVE, n=next(counter))
+                disjunct_item = SequentItem(disj2, sign=sign.NEGATIVE, n=next(counter))
             else:
                 raise ValueError("Invalid disjunct")
 
-            sq = _apply(target, [item], counter, preserve_target=False)
+            sq = _apply(target, [disjunct_item], counter, preserve_target=False)
 
             # Subproof
-            item.subproof = NDSubproof(
-                item,
-                children=[deepcopy(item.subproof) for item in sq.left],
+            disjunct_item.subproof = NDSubproof(
+                disjunct_item,
+                children=[deepcopy(left_item.subproof) for left_item in sq.left],
             )
-            target.subproof.children = [deepcopy(item.subproof)]
-            # sq.right[0].subproof = target.sequent.right[0].subproof
+
+            target.subproof.children = [deepcopy(disjunct_item.subproof)]
 
             if sq.tautology():
                 left_item = next(
-                    filter(lambda x: str(x.fml) == str(item.fml), sq.left),
+                    filter(lambda x: str(x.fml) == str(disjunct_item.fml), sq.left),
                     None,
                 )
                 target.subproof.children = [deepcopy(left_item.subproof)]
@@ -346,19 +346,21 @@ class Disjunction:
 
             for disj in target.fml.subs:
                 disj = SequentItem(disj, sign=sign.POSITIVE, n=next(counter))
-                sequent, target = _apply(target, [disj], counter)
+                sequent, _target = _apply(target, [disj], counter)
                 branches.append(sequent)
 
             # Subproof
             for branch in branches:
-                for item in branch.left:
-                    if getattr(item, "subproof", None) is None:
-                        item.subproof = NDSubproof(item)
+                for left_item in branch.left:
+                    if getattr(left_item, "subproof", None) is None:
+                        left_item.subproof = NDSubproof(left_item)
 
-                branch.right[0].subproof = NDSubproof(branch.right[0])
-                branch.right[0].subproof.children = [
-                    deepcopy(item.subproof) for item in branch.left
-                ]
+                branch.right[0].subproof = NDSubproof(
+                    branch.right[0],
+                    # parent=target.sequent.right[0].subproof,
+                    parent=target.subproof,
+                    children=[deepcopy(item.subproof) for item in branch.left],
+                )
 
             target.sequent.right[0].subproof.children = [
                 branch.right[0].subproof for branch in branches
@@ -430,26 +432,47 @@ class Conditional:
             branches = []
 
             antec = SequentItem(antec, sign=sign.NEGATIVE, n=next(counter))
-            antec.subproof = NDSubproof(antec)
 
-            sequent, target = _apply(target, [antec], counter)
+            sequent, _target_antec = _apply(target, [antec], counter)
+            # TODO: This is a unnecesarilly complex way to do this
+            # TODO: Fix dropped numbering
+            new_items = []
+            for item in sequent.items:
+                if item.sign == sign.POSITIVE or item.fml == antec.fml:
+                    new_items.append(item)
+            sequent.items = new_items
+
+            if sequent.tautology():
+                antec.subproof = NDSubproof(antec)
+            else:
+                antec.subproof = NDSubproof(
+                    antec, children=deepcopy(target.sequent.right[0].subproof.children)
+                )
+
             branches.append(sequent)
 
             conseq = SequentItem(conseq, sign=sign.POSITIVE, n=next(counter))
-            sequent, target = _apply(target, [conseq], counter)
+            sequent, _target_conseq = _apply(target, [conseq], counter)
+
+            # NOTE: Connect the subproofs
+            sequent.right[0].subproof = target.sequent.right[0].subproof
+
             branches.append(sequent)
 
-            new_subproofs = []
-
             new_subproof_antec = antec.subproof
-            new_subproof_conditional = target.subproof
+            new_subproof_conditional = deepcopy(target.subproof)
 
             new_subproofs = [
                 new_subproof_antec,
                 new_subproof_conditional,
             ]
 
-            target.sequent.right[0].subproof.children = new_subproofs
+            # TODO: Parent must be all right items
+            conseq.subproof = NDSubproof(
+                conseq,
+                parent=target.sequent.right[0].subproof,
+                children=new_subproofs,
+            )
 
             return {
                 "queue_items": branches,
