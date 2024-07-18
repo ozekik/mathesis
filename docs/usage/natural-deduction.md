@@ -32,7 +32,7 @@ print(deriv.tree())
 deriv.apply(deriv[10], rules.Conditional.Elim())
 print(deriv.tree())
 
-deriv.apply(deriv[20], rules.Disjunction.Intro("right"))
+deriv.apply(deriv[25], rules.Disjunction.Intro("right"))
 print(deriv.tree())
 ```
 
@@ -54,7 +54,7 @@ print(deriv.tree(number=False))
 deriv.apply(deriv[1], rules.Disjunction.Elim())
 deriv.apply(deriv[7], rules.Disjunction.Intro("left"))
 deriv.apply(deriv[10], rules.Conditional.Elim())
-deriv.apply(deriv[20], rules.Disjunction.Intro("right"))
+deriv.apply(deriv[25], rules.Disjunction.Intro("right"))
 
 print(deriv.tree(style="gentzen"))
 
