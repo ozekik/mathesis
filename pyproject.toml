@@ -16,7 +16,7 @@ anytree = "^2.8.0"
 prettytable = "^3.3.0"
 
 [tool.poetry.group.dev.dependencies]
-black = { version = "^24.4.2", allow-prereleases = true }
+black = { version = "^25", allow-prereleases = true }
 ipykernel = "^6.13.0"
 
 [tool.poetry.group.docs.dependencies]
@@ -25,7 +25,7 @@ mkdocs-material = "^9.1.21"
 mkdocstrings-python = "^1.2.1"
 mkdocs-exclude = "^1.0.2"
 markdown-exec = { extras = ["ansi"], version = "^1.8.1" }
-mkdocs-jupyter = "^0.24.5"
+mkdocs-jupyter = "^0.25"
 griffe-typingdoc = "^0.2.4"
 
 [build-system]
