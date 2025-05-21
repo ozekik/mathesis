@@ -66,8 +66,16 @@ f"Valid: {table.is_valid()}"
 # %% [markdown]
 # #### Łukasiewicz's Ł<sub>3</sub>
 
-# WIP
+# %%
+from mathesis.grammars import BasicGrammar
+from mathesis.semantics.truth_table import L3TruthTable
 
+grammar = BasicGrammar()
+
+fml = grammar.parse("A→A")
+
+table = L3TruthTable(fml)
+table
 # %% [markdown]
 # ### Three-valued logic LP
 
@@ -88,8 +96,16 @@ f"Valid: {table.is_valid()}"
 # %% [markdown]
 # ### Four-valued logic FDE
 
-# WIP
+# %%
+from mathesis.grammars import BasicGrammar
+from mathesis.semantics.truth_table import FDETruthTable
 
+grammar = BasicGrammar()
+
+fml = grammar.parse("(A∧¬A)→A")
+
+table = FDETruthTable(fml)
+table
 # %% [markdown]
 # ## Use custom symbols for truth values
 
