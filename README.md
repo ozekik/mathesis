@@ -1,5 +1,6 @@
 # Mathesis
 
+[![CI](https://github.com/ozekik/mathesis/actions/workflows/ci.yml/badge.svg)](https://github.com/ozekik/mathesis/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/mathesis.svg)](https://pypi.org/project/mathesis/)
 [![Documentation Status](https://img.shields.io/github/actions/workflow/status/ozekik/mathesis/pages/pages-build-deployment?branch=gh-pages&label=docs)](https://ozekik.github.io/mathesis/)
 [![PyPI downloads](https://img.shields.io/pypi/dm/mathesis.svg)](https://pypistats.org/packages/mathesis)
