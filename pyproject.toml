@@ -1,13 +1,17 @@
-[tool.poetry]
+[project]
 name = "mathesis"
 version = "0.5.3"
 description = "Formal logic library in Python for humans"
-authors = ["Kentaro Ozeki <32771324+ozekik@users.noreply.github.com>"]
+authors = [
+    {name = "Kentaro Ozeki", email = "32771324+ozekik@users.noreply.github.com"}
+]
 readme = "README.md"
+license = "MIT"
+keywords = ['logic', 'semantics', 'proof', 'philosophy']
+
+[project.urls]
 homepage = "https://ozekik.github.io/mathesis/"
 repository = "https://github.com/ozekik/mathesis"
-keywords = ['logic', 'semantics', 'proof', 'philosophy']
-license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.9"
