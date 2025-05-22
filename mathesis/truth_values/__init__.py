@@ -1,2 +1,0 @@
-from mathesis.truth_values.boolean import BooleanTruthValues
-from mathesis.truth_values.numeric import NumericTruthValues
