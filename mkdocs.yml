@@ -1,0 +1,38 @@
+site_name: "Mathesis"
+site_url: https://digitalformallogic.github.io/mathesis/
+
+# nav:
+#   - Welcome to Mathesis: index.md
+#   - Get Started:
+#       - Installation: install.md
+#       - Use with JupyterLab/Jupyer Notebook: jupyter.py
+#       # - "Propositional logics": propositional.md
+#       # - "Predicate logics": predicate.md
+#   - Usage:
+#       - Formulas and Grammars: usage/grammars.md
+#       - Truth Tables: usage/truth-tables.py
+#       - Set-theoretic Models: usage/models.py
+#       - 🚧 Possible-world (Kripke) Semantics: usage/kripke.md
+#       - Proof in Tableau: usage/tableaux.md
+#       - Proof in Natural Deduction: usage/natural-deduction.md
+#       - Proof in Sequent Calculus: usage/sequent-calculi.md
+#       - Automated Reasoning: usage/automated-reasoning.md
+#   - Contributing: contributing.md
+#   - Alternatives: alternatives.md
+
+plugins:
+  - redirects:
+      redirect_maps:
+        "index.md": https://digitalformallogic.github.io/mathesis/
+        "install.md": https://digitalformallogic.github.io/mathesis/install/
+        "jupyter.md": https://digitalformallogic.github.io/mathesis/jupyter/
+        "usage/grammars.md": https://digitalformallogic.github.io/mathesis/usage/grammars/
+        "usage/truth-tables.md": https://digitalformallogic.github.io/mathesis/usage/truth-tables/
+        "usage/models.md": https://digitalformallogic.github.io/mathesis/usage/models/
+        "usage/kripke.md": https://digitalformallogic.github.io/mathesis/usage/kripke/
+        "usage/tableaux.md": https://digitalformallogic.github.io/mathesis/usage/tableaux/
+        "usage/natural-deduction.md": https://digitalformallogic.github.io/mathesis/usage/natural-deduction/
+        "usage/sequent-calculi.md": https://digitalformallogic.github.io/mathesis/usage/sequent-calculi/
+        "usage/automated-reasoning.md": https://digitalformallogic.github.io/mathesis/usage/automated-reasoning/
+        "contributing.md": https://digitalformallogic.github.io/mathesis/contributing/
+        "alternatives.md": https://digitalformallogic.github.io/mathesis/alternatives/
